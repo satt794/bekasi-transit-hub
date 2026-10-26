@@ -41,10 +41,12 @@ from app.stations import (
     BEKASI_IDS,
     BEKASI_STATIONS,
     KNOWN_NAMES,
+    PLATFORM_GUIDES,
     bekasi_station,
     direction_for,
     display_name,
     name_key,
+    platform_for,
 )
 
 log = logging.getLogger(__name__)
@@ -205,10 +207,15 @@ class TransitService:
     async def _directory(self) -> dict[str, Station]:
         """Peta id → Station. Tidak pernah gagal; jatuh ke data statis kalau perlu."""
         directory: dict[str, Station] = {
-            sid: Station(id=sid, name=name) for sid, name in KNOWN_NAMES.items()
+            sid: Station(id=sid, name=name, platform_guide=PLATFORM_GUIDES.get(sid))
+            for sid, name in KNOWN_NAMES.items()
         }
         try:
             for station in (await self._stations()).value:
+                if not station.platform_guide and station.id in PLATFORM_GUIDES:
+                    station = station.model_copy(
+                        update={"platform_guide": PLATFORM_GUIDES[station.id]}
+                    )
                 directory[station.id] = station
         except AllProvidersFailed:
             pass
@@ -261,6 +268,8 @@ class TransitService:
         arrives_at = service_datetime(day, raw.arrives) if raw.arrives else None
         if arrives_at and arrives_at < departs_at:
             arrives_at += timedelta(days=1)
+        dir_val = direction_for(here, dest_id)
+        platform = platform_for(here, dir_val, raw.train_id)
         return Departure(
             train_id=raw.train_id,
             line=pretty_line(raw.line),
@@ -270,7 +279,8 @@ class TransitService:
             destination_name=dest_name,
             departs_at=departs_at,
             arrives_at=arrives_at,
-            direction=direction_for(here, dest_id),  # type: ignore[arg-type]
+            direction=dir_val,  # type: ignore[arg-type]
+            platform=platform,
             color=raw.color or DEFAULT_COLOR,
             is_passenger=is_passenger(raw.line),
         )

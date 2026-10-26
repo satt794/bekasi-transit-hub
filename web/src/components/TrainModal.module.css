@@ -83,6 +83,15 @@
   margin-top: 2px;
 }
 
+.modalPlatform {
+  font-weight: 800;
+  color: #b45309;
+}
+
+:global([data-theme="dark"]) .modalPlatform {
+  color: #fbbf24;
+}
+
 .closeBtn {
   width: 34px;
   height: 34px;

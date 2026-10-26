@@ -256,6 +256,33 @@
   border-radius: var(--radius-xs);
 }
 
+.platformBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 800;
+  font-size: 11px;
+  color: #b45309;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.38);
+  padding: 1px 7px;
+  border-radius: var(--radius-xs);
+  letter-spacing: 0.02em;
+}
+
+:global([data-theme="dark"]) .platformBadge {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.18);
+  border-color: rgba(245, 158, 11, 0.45);
+}
+
+.platformDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
 .tagDinas {
   padding: 1px 6px;
   border: 1px solid var(--signal);

@@ -6,14 +6,19 @@ Antarmuka web dashboard real-time untuk pemantauan jadwal KRL Commuter Line kori
 
 ## 🚀 Fitur Frontend
 
-1. **Papan Keberangkatan Dual-Arah**:
+1. **Papan Keberangkatan Dual-Arah dengan Nomor Peron**:
+   - Menampilkan nomor **Peron/Jalur** keberangkatan real-time (**Peron 1, 2, 3, 4**) di setiap baris jadwal KA.
+   - Banner ringkasan stasiun aktif dilengkapi panduan denah peron stasiun (misal `Peron 1 & 2: Arah Cikarang · Peron 3 & 4: Arah Jakarta`).
    - Memisahkan jadwal arah **Jakarta** (Manggarai, Kampung Bandan, Angke) dan arah **Cikarang** (Bekasi Timur, Tambun, Cibitung, Telagamurni).
    - Indikator hitung mundur (*countdown*) dengan warna urgensi interaktif (kedip saat `< 2 menit`).
-2. **Hub Integrasi Antarmoda (Transjakarta & Trans Patriot)**:
+2. **Hub Integrasi Antarmoda Se-Jabodetabek (Transjakarta & Trans Patriot)**:
+   - Akses **30+ rute Transjakarta** se-Jabodetabek (seluruh **14 Koridor Utama BRT**, rute perbatasan **Bekasi, Bogor, Depok, Tangerang & Tangsel**, serta bus kota **Trans Patriot**).
+   - **Filter Pencarian Cepat (Live Search)**: Kotak pencarian instan rute bus berdasarkan kode (misal `B11`, `13`, `D11`), nama tujuan, atau koridor.
+   - **Pill Filter Kategori Wilayah**: Filter cepat berdasarkan klaster wilayah (Semua Jabodetabek, Bekasi, Jakarta BRT, Bogor & Depok, Tangerang & Tangsel).
    - Menampilkan halte transit terdekat dari peron stasiun aktif lengkap dengan estimasi jarak (meter) dan waktu jalan kaki (menit).
    - **Mode Tampilan Geser Penuh (Slider) & Grid**: Penjelajahan kartu rute bus dengan rel horizontal interaktif (*touch swipe / mouse drag / slider navigation*) serta mode grid responsif anti-overflow.
    - Tab **Di Stasiun Ini**: Daftar rute bus penghubung langsung di stasiun yang sedang dipilih.
-   - Tab **Semua Rute Bekasi — Jakarta**: Rute BRT layang & jalan tol (B11 Summarecon-Tosari, B12 Summarecon-Tj. Priok, B21 Bekasi Timur-Grogol, B22 Bekasi Timur-Juanda, Koridor 11 Pulo Gebang-Kp. Melayu, dan Royaltrans).
+   - Tab **Jaringan Se-Jabodetabek**: Eksplorasi seluruh rute bus Transjakarta se-Jabodetabek.
    - Tab **Panduan Transfer**: Panduan fisik navigasi pindah moda seperti Skybridge Cakung lantai 2 (tanpa keluar jalan raya), Pintu Selatan Stasiun Bekasi, JPO Jatinegara, dan Terminal Terpadu Bekasi Timur.
    - **Modal Detail Rute Bus**: Timeline urutan seluruh halte/pemberhentian, tarif resmi, jam operasi, interval kedatangan bus (headway), dan stasiun KRL terhubung.
 3. **Peta Jalur Koridor Interaktif**:

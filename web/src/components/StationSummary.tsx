@@ -55,6 +55,15 @@ export function StationSummary({ station, summary, loading, now }: Props) {
           <p className={styles.heroDesc}>
             Lintasan utama Commuter Line Cikarang — Penghubung komuter Bekasi & Jabodetabek
           </p>
+          {station.platform_guide && (
+            <div className={styles.platformGuideBox}>
+              <span className={styles.platformGuideIcon}>🚊</span>
+              <div className={styles.platformGuideText}>
+                <span className={styles.platformGuideLabel}>Panduan Peron Stasiun:</span>
+                <span className={styles.platformGuideContent}>{station.platform_guide}</span>
+              </div>
+            </div>
+          )}
         </div>
 
         {summary.first_departure && summary.last_departure && (

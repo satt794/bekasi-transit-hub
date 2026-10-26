@@ -11,6 +11,7 @@ export interface Station {
   region: string | null;
   is_bekasi: boolean;
   order: number | null;
+  platform_guide?: string | null;
 }
 
 export interface ProviderAttempt {
@@ -38,6 +39,7 @@ export interface Departure {
   departs_at: string;
   arrives_at: string | null;
   direction: Direction;
+  platform?: string | null;
   color: string;
   is_passenger: boolean;
 }
@@ -145,11 +147,13 @@ export interface TransjakartaRoute {
   route_id: string;
   name: string;
   corridor: string;
-  service_type: "BRT" | "Non-BRT" | "Trans Patriot" | "Royaltrans";
+  service_type: "BRT" | "Non-BRT" | "Trans Patriot" | "Royaltrans" | "Mikrotrans";
   color: string;
   fare: number;
   operational_hours: string;
   headway_min: number;
+  area?: string;
+  area_name?: string;
   connecting_stations: string[];
   stops: string[];
   description: string;

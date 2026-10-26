@@ -257,12 +257,20 @@ def test_chain_all_failed():
 def test_transjakarta_routes_and_integrations():
     from app.transjakarta import STATION_INTEGRATIONS, TRANSJAKARTA_ROUTES
 
-    assert len(TRANSJAKARTA_ROUTES) >= 8
+    assert len(TRANSJAKARTA_ROUTES) >= 25
     route_ids = [r.route_id for r in TRANSJAKARTA_ROUTES]
     assert "B11" in route_ids
     assert "B21" in route_ids
+    assert "1" in route_ids
     assert "11" in route_ids
+    assert "13" in route_ids
+    assert "D11" in route_ids
+    assert "S11" in route_ids
     assert "TP1" in route_ids
+
+    # Cek area wilayah rute
+    areas = {r.area for r in TRANSJAKARTA_ROUTES}
+    assert {"bekasi", "brt_jakarta", "bogor_depok", "tangerang"}.issubset(areas)
 
     # Stasiun Bekasi terhubung dengan Trans Patriot & feeder
     bks = STATION_INTEGRATIONS.get("BKS")
@@ -274,3 +282,16 @@ def test_transjakarta_routes_and_integrations():
     cuk = STATION_INTEGRATIONS.get("CUK")
     assert cuk is not None
     assert any(r.route_id == "11" for r in cuk.routes)
+
+
+def test_station_and_departure_platform(service: TransitService):
+    res = run(service.departures("BKS", now=at(5, 0)))
+    # Stasiun memiliki platform_guide
+    assert res.station.platform_guide is not None
+    assert "Peron 1 & 2" in res.station.platform_guide
+
+    # Keberangkatan memiliki platform terisi
+    for d in res.departures["jakarta"]:
+        assert d.platform in ("Peron 3", "Peron 4")
+    for d in res.departures["cikarang"]:
+        assert d.platform in ("Peron 1", "Peron 2")

@@ -20,6 +20,9 @@ class Station(BaseModel):
     region: str | None = Field(default=None, description="Kota/Kabupaten untuk stasiun Bekasi")
     is_bekasi: bool = False
     order: int | None = Field(default=None, description="Urutan pada koridor Bekasi")
+    platform_guide: str | None = Field(
+        default=None, description="Panduan peron/jalur stasiun, misal Peron 1-2 Arah Cikarang"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -62,6 +65,7 @@ class Departure(BaseModel):
     departs_at: datetime
     arrives_at: datetime | None
     direction: Direction
+    platform: str | None = Field(default=None, description="Peron/jalur keberangkatan di stasiun ini")
     color: str
     is_passenger: bool
 
@@ -176,14 +180,16 @@ class ProviderStatus(BaseModel):
 
 
 class TransjakartaRoute(BaseModel):
-    route_id: str = Field(description="Kode rute, misal B11, 11, TP1")
+    route_id: str = Field(description="Kode rute, misal B11, 11, TP1, 13, D11, S11")
     name: str = Field(description="Nama rute, misal Summarecon Bekasi ⇄ Tosari")
     corridor: str
-    service_type: Literal["BRT", "Non-BRT", "Trans Patriot", "Royaltrans"]
+    service_type: Literal["BRT", "Non-BRT", "Trans Patriot", "Royaltrans", "Mikrotrans"]
     color: str
     fare: int
     operational_hours: str
     headway_min: int
+    area: str = Field(default="bekasi", description="Kode area wilayah: bekasi, bogor_depok, tangerang, brt_jakarta")
+    area_name: str = Field(default="Bekasi", description="Nama area wilayah, misal Bekasi & Trans Patriot")
     connecting_stations: list[str] = []
     stops: list[str] = []
     description: str

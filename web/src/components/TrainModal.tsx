@@ -40,6 +40,9 @@ export function TrainModal({ train, now, onClose }: Props) {
               <h2 className={styles.trainTitle}>{train.line || "Commuter Line"}</h2>
               <p className={styles.trainRoute}>
                 Tujuan akhir: <strong>{train.destination_name}</strong>
+                {train.platform && (
+                  <span className={styles.modalPlatform}> · {train.platform}</span>
+                )}
               </p>
             </div>
           </div>

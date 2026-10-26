@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   endpoints,
   type Station,
@@ -18,8 +18,19 @@ interface Props {
 
 type TabType = "station_hub" | "all_routes" | "transfer_guide";
 
+const AREAS = [
+  { id: "all", label: "🌐 Semua Jabodetabek" },
+  { id: "bekasi", label: "🚆 Bekasi & Trans Patriot" },
+  { id: "brt_jakarta", label: "🚌 Koridor Utama BRT (1–14)" },
+  { id: "bogor_depok", label: "🌲 Bogor & Depok" },
+  { id: "tangerang", label: "🏙️ Tangerang & Tangsel" },
+];
+
 export function TransjakartaSection({ currentStation, onSelectRoute }: Props) {
   const [activeTab, setActiveTab] = useState<TabType>("station_hub");
+  const [selectedArea, setSelectedArea] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
   const tabGroupRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -33,15 +44,35 @@ export function TransjakartaSection({ currentStation, onSelectRoute }: Props) {
     60_000,
   );
 
-  // Ambil seluruh rute Transjakarta & Trans Patriot koridor Bekasi
+  // Ambil seluruh rute Transjakarta & Trans Patriot se-Jabodetabek
   const { data: allRoutesData, loading: allLoading } = useApi<TransjakartaResponse>(
     endpoints.transjakartaRoutes(),
     300_000,
   );
 
   const integration = hubData?.integration;
-  const connectedRoutes = integration?.routes || [];
-  const allRoutes = allRoutesData?.routes || [];
+  const connectedRoutes = useMemo(() => integration?.routes || [], [integration?.routes]);
+  const allRoutes = useMemo(() => allRoutesData?.routes || [], [allRoutesData?.routes]);
+
+  // Filter rute se-Jabodetabek berdasarkan kategori wilayah dan pencarian kata kunci
+  const filteredAllRoutes = useMemo(() => {
+    let list = allRoutes;
+    if (selectedArea !== "all") {
+      list = list.filter((r) => r.area === selectedArea);
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      list = list.filter(
+        (r) =>
+          r.route_id.toLowerCase().includes(q) ||
+          r.name.toLowerCase().includes(q) ||
+          r.corridor.toLowerCase().includes(q) ||
+          (r.area_name && r.area_name.toLowerCase().includes(q)) ||
+          r.stops.some((s) => s.toLowerCase().includes(q)),
+      );
+    }
+    return list;
+  }, [allRoutes, selectedArea, searchQuery]);
 
   // Hitung status scroll tabGroup
   const checkScroll = useCallback(() => {
@@ -116,11 +147,11 @@ export function TransjakartaSection({ currentStation, onSelectRoute }: Props) {
           Integrasi Antarmoda Terpadu
         </div>
         <h2 id="tj-title" className={styles.title}>
-          Transjakarta & Bus Feeder Koridor Bekasi
+          Transjakarta & Jaringan Bus Se-Jabodetabek
         </h2>
         <p className={styles.subtitle}>
-          Koneksi lanjutan langsung dari peron KRL ke jaringan BRT Transjakarta, bus kota Trans
-          Patriot, dan pengumpan perbatasan
+          Koneksi lanjutan multi-modal dari peron KRL ke seluruh koridor BRT Transjakarta (1–14), bus kota
+          Trans Patriot Bekasi, serta rute perbatasan Bogor, Depok, dan Tangerang
         </p>
       </div>
 
@@ -168,8 +199,8 @@ export function TransjakartaSection({ currentStation, onSelectRoute }: Props) {
               onClick={() => setActiveTab("all_routes")}
             >
               <span className={styles.tabIcon}>🗺️</span>
-              <span>Semua Rute Bekasi — Jakarta</span>
-              <span className={styles.tabCount}>{allRoutes.length || 10}</span>
+              <span>Jaringan Se-Jabodetabek</span>
+              <span className={styles.tabCount}>{allRoutes.length || 30}</span>
             </button>
             <button
               type="button"
@@ -235,7 +266,7 @@ export function TransjakartaSection({ currentStation, onSelectRoute }: Props) {
                     <p className={styles.emptyDesc}>
                       Tersedia angkutan pengumpan lokal / ojek daring menuju koridor utama Transjakarta
                       terdekat (seperti Halte Summarecon Bekasi atau Terminal Bekasi). Cek tab{" "}
-                      <strong>Semua Rute Bekasi</strong> untuk rute utama menuju Jakarta.
+                      <strong>Jaringan Se-Jabodetabek</strong> untuk rute utama menuju Jakarta dan Bodetabek.
                     </p>
                     <button
                       type="button"
@@ -254,15 +285,57 @@ export function TransjakartaSection({ currentStation, onSelectRoute }: Props) {
         </div>
       )}
 
-      {/* TAB 2: Semua Rute Bekasi - Jakarta */}
+      {/* TAB 2: Semua Rute Transjakarta Se-Jabodetabek */}
       {activeTab === "all_routes" && (
         <div className={styles.tabContent}>
           <div className={styles.allRoutesNotice}>
             <span>
-              💡 <strong>Rute Lintas Batas:</strong> Transjakarta koridor B (Bekasi) dan Trans Patriot
-              beroperasi melalui jalur Tol Jakarta-Cikampek dan koridor layang untuk menghubungkan komuter
-              Bekasi ke sentra bisnis Sudirman, Grogol, Tanjung Priok, dan sekitarnya.
+              🌐 <strong>Jaringan Transjakarta Se-Jabodetabek:</strong> Mencakup seluruh 14 Koridor Utama
+              BRT Jakarta, bus perbatasan Transjabodetabek koridor Bekasi, Depok, Bogor, dan Tangerang,
+              serta bus pengumpan stasiun KRL.
             </span>
+          </div>
+
+          {/* Search Bar & Area Filter Bar */}
+          <div className={styles.filterSection}>
+            <div className={styles.searchBox}>
+              <span className={styles.searchIcon}>🔍</span>
+              <input
+                id="search-transjakarta"
+                type="text"
+                className={styles.searchInput}
+                placeholder="Cari rute (misal: B11, 13, D11, Koridor 1), tujuan (Ciledug, Depok, BSD, Monas, Tosari)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  className={styles.searchClearBtn}
+                  onClick={() => setSearchQuery("")}
+                  aria-label="Hapus pencarian"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            <div className={styles.areaFilterChips} role="group" aria-label="Filter wilayah">
+              {AREAS.map((a) => {
+                const count = a.id === "all" ? allRoutes.length : allRoutes.filter((r) => r.area === a.id).length;
+                return (
+                  <button
+                    key={a.id}
+                    type="button"
+                    className={`${styles.areaChip} ${selectedArea === a.id ? styles.areaChipActive : ""}`}
+                    onClick={() => setSelectedArea(a.id)}
+                  >
+                    <span>{a.label}</span>
+                    <span className={styles.areaChipCount}>{count}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {allLoading && allRoutes.length === 0 ? (
@@ -271,8 +344,26 @@ export function TransjakartaSection({ currentStation, onSelectRoute }: Props) {
               <span className="skeleton" style={{ width: "100%", height: 120, borderRadius: 12 }} />
               <span className="skeleton" style={{ width: "100%", height: 120, borderRadius: 12 }} />
             </div>
+          ) : filteredAllRoutes.length === 0 ? (
+            <div className={styles.emptySearchCard}>
+              <span className={styles.emptySearchIcon}>🔍</span>
+              <h4 className={styles.emptyTitle}>Tidak ada rute yang cocok</h4>
+              <p className={styles.emptyDesc}>
+                Tidak ditemukan rute bus untuk kata kunci <strong>&ldquo;{searchQuery}&rdquo;</strong> di wilayah terpilih.
+              </p>
+              <button
+                type="button"
+                className={styles.resetFilterBtn}
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedArea("all");
+                }}
+              >
+                Reset Filter Pencarian
+              </button>
+            </div>
           ) : (
-            <RoutesListView routes={allRoutes} onSelectRoute={onSelectRoute} />
+            <RoutesListView routes={filteredAllRoutes} onSelectRoute={onSelectRoute} />
           )}
         </div>
       )}
@@ -518,7 +609,7 @@ function RouteCard({
           <span
             className={styles.routeIdBadge}
             style={{
-              background: isTransPatriot ? "#dc2626" : isRoyal ? "#7c3aed" : "#0284c7",
+              background: route.color || (isTransPatriot ? "#dc2626" : isRoyal ? "#7c3aed" : "#0284c7"),
             }}
           >
             {route.route_id}
@@ -526,6 +617,11 @@ function RouteCard({
           <span className={styles.serviceTypeTag} data-type={route.service_type}>
             {route.service_type}
           </span>
+          {route.area_name && (
+            <span className={styles.areaBadge}>
+              {route.area_name}
+            </span>
+          )}
         </div>
         <span className={styles.fareBadge}>{formattedFare}</span>
       </div>

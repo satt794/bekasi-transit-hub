@@ -1,6 +1,6 @@
-# 🚆🚌 Bekasi Transit Hub — Platform Transportasi Publik All-in-One KRL & Transjakarta
+# 🚆🚌 Bekasi Transit Hub — Platform Transportasi Publik All-in-One KRL & Transjakarta Se-Jabodetabek
 
-> Dashboard web fullstack multi-modal terintegrasi (*All-in-One*) untuk kawasan Bekasi: menggabungkan pemantauan real-time KRL Commuter Line Cikarang dengan jaringan bus BRT Transjakarta dan bus kota Trans Patriot. Dilengkapi backend scraper real-time berbasis Python (FastAPI) dan antarmuka modern Next.js 16.
+> Dashboard web fullstack multi-modal terintegrasi (*All-in-One*) untuk kawasan Bekasi & Aglomerasi Jabodetabek: menggabungkan pemantauan real-time KRL Commuter Line dengan nomor peron/jalur stasiun, seluruh 14 koridor utama BRT Transjakarta, serta jaringan bus perbatasan Bogor, Depok, dan Tangerang. Dilengkapi backend scraper real-time berbasis Python (FastAPI) dan antarmuka modern Next.js 16.
 
 ---
 
@@ -9,7 +9,7 @@
 - [Tentang Proyek](#-tentang-proyek)
 - [Arsitektur Sistem](#-arsitektur-sistem)
 - [Fitur Utama](#-fitur-utama)
-- [Integrasi Antarmoda KRL + Transjakarta](#-integrasi-antarmoda-krl--transjakarta)
+- [Integrasi Antarmoda KRL + Transjakarta Se-Jabodetabek](#-integrasi-antarmoda-krl--transjakarta-se-jabodetabek)
 - [Struktur Direktori](#-struktur-direktori)
 - [Teknologi yang Digunakan](#-teknologi-yang-digunakan)
 - [Panduan Menjalankan di Lokal](#-panduan-menjalankan-di-lokal)
@@ -27,13 +27,14 @@
 
 ## 💡 Tentang Proyek
 
-Bekasi merupakan salah satu wilayah komuter terpadat dengan mobilitas harian ratusan ribu jiwa menuju Jakarta. Banyak komuter tidak hanya mengandalkan kereta KRL saja, namun sering kali harus melanjutkan perjalanan menggunakan bus Transjakarta atau bus kota Trans Patriot.
+Bekasi dan kawasan Bodetabek merupakan wilayah aglomerasi komuter terpadat dengan mobilitas harian jutaan jiwa menuju Jakarta. Banyak komuter tidak hanya mengandalkan kereta KRL saja, namun sering kali harus melanjutkan perjalanan menggunakan bus Transjakarta atau bus kota Trans Patriot.
 
-Jika hanya mengandalkan aplikasi kereta konvensional, penumpang kesulitan mengetahui koneksi halte bus terdekat saat turun di peron. **Bekasi Transit Hub** menyatukan ekosistem tersebut ke dalam satu dasbor (*All-in-One Transit Platform*):
-1. **Multi-Modal Antarmoda**: Jadwal KRL Commuter Line langsung terhubung dengan integrasi halte Transjakarta, estimasi jalan kaki, dan panduan transfer fisik (seperti Skybridge Cakung dan Pintu Selatan Stasiun Bekasi).
-2. **Memiliki Ketahanan Tinggi (*High Availability*)**: Menggunakan rantai penyedia data (*multi-tier fallback*) — mulai dari mirror publik Comuline, API resmi KAI Commuter, hingga *local disk snapshot* jika seluruh jaringan eksternal bermasalah.
-3. **Berorientasi pada Penumpang**: Jadwal dipisahkan secara tegas berdasarkan arah perjalanan (**Arah Jakarta** vs **Arah Cikarang**), dilengkapi hitung mundur (*countdown*) real-time, waktu tempuh nyata, dan rute pemberhentian KA.
-4. **Desain Anti "AI-Slope"**: Mengadopsi bahasa visual papan informasi stasiun (*transit signage*) dengan tipografi proporsional, grid presisi, token warna resmi KRL Cikarang (`#0084D8`), dan transisi tema gelap/terang tanpa distorsi visual.
+Jika hanya mengandalkan aplikasi kereta konvensional, penumpang kesulitan mengetahui informasi **peron keberangkatan stasiun** serta koneksi halte bus terdekat saat turun di peron. **Bekasi Transit Hub** menyatukan ekosistem tersebut ke dalam satu dasbor (*All-in-One Transit Platform*):
+1. **Multi-Modal Antarmoda Se-Jabodetabek**: Jadwal KRL Commuter Line langsung terhubung dengan integrasi halte Transjakarta, seluruh 14 koridor utama BRT DKI Jakarta, bus perbatasan (Bekasi, Depok, Bogor, Tangerang), estimasi jalan kaki, dan panduan transfer fisik (seperti Skybridge Cakung dan Pintu Selatan Stasiun Bekasi).
+2. **Nomor Peron/Jalur Real-Time**: Memberikan kejelasan nomor peron (Peron 1, 2, 3, 4) untuk tiap kereta yang akan tiba beserta ringkasan denah peron stasiun aktif.
+3. **Memiliki Ketahanan Tinggi (*High Availability*)**: Menggunakan rantai penyedia data (*multi-tier fallback*) — mulai dari mirror publik Comuline, API resmi KAI Commuter, hingga *local disk snapshot* jika seluruh jaringan eksternal bermasalah.
+4. **Berorientasi pada Penumpang**: Jadwal dipisahkan secara tegas berdasarkan arah perjalanan (**Arah Jakarta** vs **Arah Cikarang**), dilengkapi hitung mundur (*countdown*) real-time, waktu tempuh nyata, dan rute pemberhentian KA.
+5. **Desain Anti "AI-Slope"**: Mengadopsi bahasa visual papan informasi stasiun (*transit signage*) dengan tipografi proporsional, grid presisi, token warna resmi KRL Cikarang (`#0084D8`), dan transisi tema gelap/terang tanpa distorsi visual.
 
 ---
 
@@ -77,12 +78,14 @@ flowchart TD
 
 | Fitur | Deskripsi |
 | :--- | :--- |
-| 🚌 **Integrasi Antarmoda Transjakarta** | Informasi rute bus BRT (B11, B12, B21, B22, Koridor 11), bus kota Trans Patriot (TP1, TP2, TP3), dan Royaltrans terdekat dari peron stasiun KRL. |
-| 🚶 **Panduan Transfer Fisik** | Panduan jalan kaki nyata (misal: Skybridge Cakung lantai 2 ke Koridor 11, Pintu Selatan Stasiun Bekasi, JPO Jatinegara). |
+| 🚊 **Informasi Nomor Peron / Jalur Kereta** | Menampilkan nomor peron keberangkatan real-time (**Peron 1, 2, 3, 4**) di setiap baris jadwal serta panduan denah peron di stasiun aktif. |
+| 🚌 **Integrasi Antarmoda Se-Jabodetabek** | Akses 30+ rute Transjakarta meliputi seluruh **14 Koridor Utama BRT**, Transjabodetabek (**Bekasi, Depok, Bogor, Tangerang & Tangsel**), bus kota Trans Patriot, dan Royaltrans. |
+| 🔍 **Live Search & Filter Wilayah Bus** | Fitur pencarian instan berdasarkan kode rute, halte, atau tujuan, serta tombol filter wilayah terpadu se-Jabodetabek. |
+| 🚶 **Panduan Transfer Fisik** | Panduan jalan kaki nyata (misal: Skybridge Cakung lantai 2 ke Koridor 11, Pintu Selatan Stasiun Bekasi, JPO Jatinegara, Terminal Bekasi Timur). |
 | 🗺️ **Peta Jalur Koridor Interaktif** | Peta strip visual stasiun Bekasi (Kranji, Bekasi, Bekasi Timur, Tambun, Cibitung, Telagamurni, Cikarang) yang berfungsi ganda sebagai navigasi stasiun instan. |
 | ⏱️ **Papan Keberangkatan Real-Time** | Pemisahan otomatis arah Jakarta dan Cikarang, live countdown, waktu kedatangan di tujuan, dan animasi urgensi (kedip saat kereta tiba ≤ 2 menit). |
 | 📊 **Analisis Frekuensi Jadwal per Jam** | Histogram grafis interaktif jadwal kereta sepanjang 24 jam operasional dengan penanda jam aktif saat ini dan penanda jam sibuk (*peak hours*). |
-| 🚊 **Timeline Rute Perjalanan KRL (Modal)** | Pelacak urutan stasiun pemberhentian kereta dengan status *passed* (terlewati), *next* (terdekat), dan *upcoming* (mendatang). |
+| 🚊 **Timeline Rute Perjalanan KRL (Modal)** | Pelacak urutan stasiun pemberhentian kereta dengan status *passed* (terlewati), *next* (terdekat), dan *upcoming* (mendatang) lengkap dengan indikator peron. |
 | 🚌 **Timeline Rute Bus & Halte (Modal)** | Modal inspeksi daftar halte rute Transjakarta, tarif, jam operasi, interval bus (headway), dan stasiun KRL terhubung. |
 | 🧭 **Pencarian Kereta Langsung (Trip Planner)** | Pencarian perjalanan langsung tanpa transit (misal Bekasi ke Manggarai, Sudirman, atau Tanah Abang) lengkap dengan estimasi durasi menit. |
 | 🌓 **Dark & Light Mode Zero-Flash** | Dukungan penuh mode Terang, Gelap, dan Sistem dengan teknik *head script injection* untuk mencegah kedipan putih saat halaman dimuat. |
@@ -243,11 +246,11 @@ Backend menyediakan endpoint RESTful yang bersih dan terdokumentasi rapi:
 | Method | Endpoint | Keterangan |
 | :--- | :--- | :--- |
 | `GET` | `/api/health` | Status server, versi, jam sistem (WIB), dan provider yang aktif. |
-| `GET` | `/api/stations` | Daftar stasiun koridor Bekasi dan direktori seluruh stasiun KRL. |
-| `GET` | `/api/stations/{id}/departures` | Jadwal keberangkatan berikutnya (Arah Jakarta & Cikarang) + metrik ringkasan. |
+| `GET` | `/api/stations` | Daftar stasiun koridor Bekasi dan direktori seluruh stasiun KRL (dilengkapi `platform_guide`). |
+| `GET` | `/api/stations/{id}/departures` | Jadwal keberangkatan berikutnya (Arah Jakarta & Cikarang) + nomor peron (`platform`) + metrik ringkasan. |
 | `GET` | `/api/stations/{id}/timetable` | Jadwal lengkap 1 hari operasional (03:00 - 03:00 WIB berikutnya). |
 | `GET` | `/api/stations/{id}/transjakarta` | Integrasi halte bus terdekat, jarak jalan kaki, panduan transfer fisik, dan rute bus penghubung di stasiun terkait. |
-| `GET` | `/api/transjakarta/routes` | Katalog seluruh rute Transjakarta (BRT, Non-BRT, Royaltrans) & bus kota Trans Patriot koridor Bekasi — Jakarta. |
+| `GET` | `/api/transjakarta/routes` | Katalog rute Transjakarta se-Jabodetabek (14 Koridor BRT, Transjabodetabek Bodetabek, Trans Patriot) lengkap dengan filter area. |
 | `GET` | `/api/trains/{id}/route` | Urutan stasiun pemberhentian satu nomor KA (status: passed/next/upcoming). |
 | `GET` | `/api/trips?from={origin}&to={dest}` | Daftar jadwal kereta langsung dari stasiun asal ke stasiun tujuan. |
 

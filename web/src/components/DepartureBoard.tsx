@@ -162,6 +162,15 @@ function DepartureRow({
 
           <div className={styles.meta}>
             <span className={`${styles.kaBadge} mono`}>KA {dep.train_id}</span>
+            {dep.platform && (
+              <span
+                className={`${styles.platformBadge} mono`}
+                title={`Berangkat dari ${dep.platform}`}
+              >
+                <span className={styles.platformDot} />
+                {dep.platform}
+              </span>
+            )}
             {!dep.is_passenger && <span className={styles.tagDinas}>Dinas</span>}
             {dep.arrives_at && (
               <span className={styles.arrivalMeta}>

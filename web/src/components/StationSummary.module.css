@@ -108,6 +108,50 @@
   margin-top: 2px;
 }
 
+.platformGuideBox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: 6px;
+  padding: 5px 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  border-left: 3px solid #f59e0b;
+  border-radius: var(--radius-xs);
+  width: fit-content;
+  max-width: 100%;
+}
+
+.platformGuideIcon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.platformGuideText {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.platformGuideLabel {
+  font-size: 11px;
+  font-weight: 800;
+  color: #b45309;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+:global([data-theme="dark"]) .platformGuideLabel {
+  color: #fbbf24;
+}
+
+.platformGuideContent {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
 /* Operating Hours */
 .operatingHours {
   display: flex;
