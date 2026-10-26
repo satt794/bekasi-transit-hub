@@ -73,6 +73,9 @@ app.add_middleware(
 
 
 def service(request: Request) -> TransitService:
+    if not hasattr(request.app.state, "service") or request.app.state.service is None:
+        providers = build_providers()
+        request.app.state.service = TransitService(providers)
     return request.app.state.service
 
 
