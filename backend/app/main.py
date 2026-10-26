@@ -101,6 +101,8 @@ async def _train_not_found(_: Request, exc: TrainNotFound) -> JSONResponse:
 
 
 @app.get("/", tags=["meta"])
+@app.get("/api/index", tags=["meta"])
+@app.get("/api/index.py", tags=["meta"])
 async def root() -> dict[str, str]:
     return {
         "status": "ok",
@@ -108,6 +110,7 @@ async def root() -> dict[str, str]:
         "version": __version__,
         "docs": "/docs",
         "health": "/api/health",
+        "stations": "/api/stations",
     }
 
 
