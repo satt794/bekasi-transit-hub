@@ -100,6 +100,17 @@ async def _train_not_found(_: Request, exc: TrainNotFound) -> JSONResponse:
     return JSONResponse(status_code=404, content={"detail": f"Kereta '{exc}' tidak ditemukan."})
 
 
+@app.get("/", tags=["meta"])
+async def root() -> dict[str, str]:
+    return {
+        "status": "ok",
+        "service": "Bekasi Transit Hub API",
+        "version": __version__,
+        "docs": "/docs",
+        "health": "/api/health",
+    }
+
+
 @app.get("/api/health", response_model=HealthResponse, tags=["meta"])
 async def health(request: Request) -> HealthResponse:
     return HealthResponse(

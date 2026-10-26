@@ -61,7 +61,7 @@ class Settings:
     route_ttl: int = field(default_factory=lambda: _env_int("ROUTE_TTL", 1800))
 
     cors_origins: list[str] = field(
-        default_factory=lambda: _env_list("CORS_ORIGINS", ["http://localhost:3000"])
+        default_factory=lambda: _env_list("CORS_ORIGINS", ["*"])
     )
 
     user_agent: str = (
