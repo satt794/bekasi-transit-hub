@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   endpoints,
   type Station,
@@ -20,6 +20,12 @@ type TabType = "station_hub" | "all_routes" | "transfer_guide";
 
 export function TransjakartaSection({ currentStation, onSelectRoute }: Props) {
   const [activeTab, setActiveTab] = useState<TabType>("station_hub");
+  const tabGroupRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const isDraggingRef = useRef(false);
+  const startXRef = useRef(0);
+  const scrollLeftRef = useRef(0);
 
   // Ambil data integrasi bus di stasiun aktif
   const { data: hubData, loading: hubLoading } = useApi<StationTransitHubResponse>(
@@ -37,56 +43,154 @@ export function TransjakartaSection({ currentStation, onSelectRoute }: Props) {
   const connectedRoutes = integration?.routes || [];
   const allRoutes = allRoutesData?.routes || [];
 
+  // Hitung status scroll tabGroup
+  const checkScroll = useCallback(() => {
+    const el = tabGroupRef.current;
+    if (!el) return;
+    const hasScroll = el.scrollWidth > el.clientWidth + 2;
+    setCanScrollLeft(el.scrollLeft > 6);
+    setCanScrollRight(hasScroll && el.scrollLeft < el.scrollWidth - el.clientWidth - 6);
+  }, []);
+
+  useEffect(() => {
+    checkScroll();
+    const el = tabGroupRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", checkScroll, { passive: true });
+    window.addEventListener("resize", checkScroll);
+    return () => {
+      el.removeEventListener("scroll", checkScroll);
+      window.removeEventListener("resize", checkScroll);
+    };
+  }, [checkScroll, connectedRoutes.length, allRoutes.length]);
+
+  // Otomatis pusatkan tab aktif agar terlihat penuh tanpa terpotong
+  useEffect(() => {
+    const el = tabGroupRef.current;
+    if (!el) return;
+    const activeBtn = el.querySelector<HTMLButtonElement>('[aria-selected="true"]');
+    if (activeBtn) {
+      activeBtn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }
+    // Update button visibility setelah scroll
+    const timer = setTimeout(checkScroll, 300);
+    return () => clearTimeout(timer);
+  }, [activeTab, checkScroll]);
+
+  const scrollTabs = (direction: "left" | "right") => {
+    const el = tabGroupRef.current;
+    if (!el) return;
+    const amount = direction === "left" ? -220 : 220;
+    el.scrollBy({ left: amount, behavior: "smooth" });
+  };
+
+  // Mouse Drag-to-Scroll untuk desktop
+  const handleMouseDown = (e: React.MouseEvent) => {
+    const el = tabGroupRef.current;
+    if (!el) return;
+    isDraggingRef.current = true;
+    startXRef.current = e.pageX - el.offsetLeft;
+    scrollLeftRef.current = el.scrollLeft;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDraggingRef.current) return;
+    const el = tabGroupRef.current;
+    if (!el) return;
+    e.preventDefault();
+    const x = e.pageX - el.offsetLeft;
+    const walk = (x - startXRef.current) * 1.5;
+    el.scrollLeft = scrollLeftRef.current - walk;
+  };
+
+  const handleMouseUpOrLeave = () => {
+    isDraggingRef.current = false;
+  };
+
   return (
     <section className={styles.section} aria-labelledby="tj-title">
       {/* Header Section */}
       <div className={styles.head}>
-        <div className={styles.headLeft}>
-          <div className={styles.headBadge}>
-            <span className={styles.busIcon}>🚌</span>
-            Integrasi Antarmoda Terpadu
-          </div>
-          <h2 id="tj-title" className={styles.title}>
-            Transjakarta & Bus Feeder Koridor Bekasi
-          </h2>
-          <p className={styles.subtitle}>
-            Koneksi lanjutan langsung dari peron KRL ke jaringan BRT Transjakarta, bus kota Trans
-            Patriot, dan pengumpan perbatasan
-          </p>
+        <div className={styles.headBadge}>
+          <span className={styles.busIcon}>🚌</span>
+          Integrasi Antarmoda Terpadu
         </div>
+        <h2 id="tj-title" className={styles.title}>
+          Transjakarta & Bus Feeder Koridor Bekasi
+        </h2>
+        <p className={styles.subtitle}>
+          Koneksi lanjutan langsung dari peron KRL ke jaringan BRT Transjakarta, bus kota Trans
+          Patriot, dan pengumpan perbatasan
+        </p>
+      </div>
 
-        {/* Tab Switcher */}
-        <div className={styles.tabGroup} role="tablist" aria-label="Kategori transit bus">
+      {/* Tab Switcher Bar - Full Width, Bebas Terhimpit & Mendukung Geser Penuh */}
+      <div className={styles.tabNavRow}>
+        <div className={styles.tabGroupWrapper}>
           <button
             type="button"
-            role="tab"
-            aria-selected={activeTab === "station_hub"}
-            className={styles.tabBtn}
-            onClick={() => setActiveTab("station_hub")}
+            className={`${styles.tabScrollBtn} ${styles.tabScrollBtnLeft}`}
+            data-visible={canScrollLeft}
+            onClick={() => scrollTabs("left")}
+            aria-label="Geser tab ke kiri"
           >
-            📍 Di Stasiun {currentStation.name}
-            {connectedRoutes.length > 0 && (
-              <span className={styles.tabCount}>{connectedRoutes.length}</span>
-            )}
+            ‹
           </button>
+
+          <div
+            ref={tabGroupRef}
+            className={styles.tabGroup}
+            role="tablist"
+            aria-label="Kategori transit bus"
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUpOrLeave}
+            onMouseLeave={handleMouseUpOrLeave}
+          >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === "station_hub"}
+              className={styles.tabBtn}
+              onClick={() => setActiveTab("station_hub")}
+            >
+              <span className={styles.tabIcon}>📍</span>
+              <span>Di Stasiun {currentStation.name}</span>
+              {connectedRoutes.length > 0 && (
+                <span className={styles.tabCount}>{connectedRoutes.length}</span>
+              )}
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === "all_routes"}
+              className={styles.tabBtn}
+              onClick={() => setActiveTab("all_routes")}
+            >
+              <span className={styles.tabIcon}>🗺️</span>
+              <span>Semua Rute Bekasi — Jakarta</span>
+              <span className={styles.tabCount}>{allRoutes.length || 10}</span>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === "transfer_guide"}
+              className={styles.tabBtn}
+              onClick={() => setActiveTab("transfer_guide")}
+            >
+              <span className={styles.tabIcon}>🚶</span>
+              <span>Panduan Transfer Antarmoda</span>
+            </button>
+          </div>
+
           <button
             type="button"
-            role="tab"
-            aria-selected={activeTab === "all_routes"}
-            className={styles.tabBtn}
-            onClick={() => setActiveTab("all_routes")}
+            className={`${styles.tabScrollBtn} ${styles.tabScrollBtnRight}`}
+            data-visible={canScrollRight}
+            onClick={() => scrollTabs("right")}
+            aria-label="Geser tab ke kanan"
           >
-            🗺️ Semua Rute Bekasi — Jakarta
-            <span className={styles.tabCount}>{allRoutes.length || 10}</span>
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTab === "transfer_guide"}
-            className={styles.tabBtn}
-            onClick={() => setActiveTab("transfer_guide")}
-          >
-            🚶 Panduan Transfer
+            ›
           </button>
         </div>
       </div>
@@ -133,14 +237,17 @@ export function TransjakartaSection({ currentStation, onSelectRoute }: Props) {
                       terdekat (seperti Halte Summarecon Bekasi atau Terminal Bekasi). Cek tab{" "}
                       <strong>Semua Rute Bekasi</strong> untuk rute utama menuju Jakarta.
                     </p>
+                    <button
+                      type="button"
+                      className={styles.emptyActionBtn}
+                      onClick={() => setActiveTab("all_routes")}
+                    >
+                      Buka Semua Rute Transjakarta ➔
+                    </button>
                   </div>
                 </div>
               ) : (
-                <div className={styles.routesGrid}>
-                  {connectedRoutes.map((route) => (
-                    <RouteCard key={route.route_id} route={route} onSelect={onSelectRoute} />
-                  ))}
-                </div>
+                <RoutesListView routes={connectedRoutes} onSelectRoute={onSelectRoute} />
               )}
             </>
           )}
@@ -165,11 +272,7 @@ export function TransjakartaSection({ currentStation, onSelectRoute }: Props) {
               <span className="skeleton" style={{ width: "100%", height: 120, borderRadius: 12 }} />
             </div>
           ) : (
-            <div className={styles.routesGrid}>
-              {allRoutes.map((route) => (
-                <RouteCard key={route.route_id} route={route} onSelect={onSelectRoute} />
-              ))}
-            </div>
+            <RoutesListView routes={allRoutes} onSelectRoute={onSelectRoute} />
           )}
         </div>
       )}
@@ -265,12 +368,134 @@ export function TransjakartaSection({ currentStation, onSelectRoute }: Props) {
   );
 }
 
+function RoutesListView({
+  routes,
+  onSelectRoute,
+}: {
+  routes: TransjakartaRoute[];
+  onSelectRoute: (route: TransjakartaRoute) => void;
+}) {
+  const [viewMode, setViewMode] = useState<"slider" | "grid">("slider");
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const isDraggingRef = useRef(false);
+  const startXRef = useRef(0);
+  const scrollLeftRef = useRef(0);
+
+  const scrollSlider = (direction: "left" | "right") => {
+    const el = sliderRef.current;
+    if (!el) return;
+    const amount = direction === "left" ? -340 : 340;
+    el.scrollBy({ left: amount, behavior: "smooth" });
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    const el = sliderRef.current;
+    if (!el) return;
+    isDraggingRef.current = true;
+    startXRef.current = e.pageX - el.offsetLeft;
+    scrollLeftRef.current = el.scrollLeft;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDraggingRef.current) return;
+    const el = sliderRef.current;
+    if (!el) return;
+    e.preventDefault();
+    const x = e.pageX - el.offsetLeft;
+    const walk = (x - startXRef.current) * 1.5;
+    el.scrollLeft = scrollLeftRef.current - walk;
+  };
+
+  const handleMouseUpOrLeave = () => {
+    isDraggingRef.current = false;
+  };
+
+  return (
+    <div className={styles.routesContainer}>
+      <div className={styles.routesControlsRow}>
+        <span className={styles.routesSummaryText}>
+          🚌 Menampilkan <strong>{routes.length} rute bus</strong>
+        </span>
+
+        <div className={styles.routesActions}>
+          {viewMode === "slider" && (
+            <div className={styles.sliderNavBtns}>
+              <button
+                type="button"
+                className={styles.sliderNavBtn}
+                onClick={() => scrollSlider("left")}
+                aria-label="Geser rute ke kiri"
+                title="Geser rute ke kiri"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                className={styles.sliderNavBtn}
+                onClick={() => scrollSlider("right")}
+                aria-label="Geser rute ke kanan"
+                title="Geser rute ke kanan"
+              >
+                ›
+              </button>
+            </div>
+          )}
+
+          <div className={styles.viewModeToggle} role="group" aria-label="Pilih mode tampilan">
+            <button
+              type="button"
+              className={`${styles.viewToggleBtn} ${viewMode === "slider" ? styles.viewToggleActive : ""}`}
+              onClick={() => setViewMode("slider")}
+              title="Tampilan geser horizontal penuh"
+            >
+              ↔ Geser Penuh
+            </button>
+            <button
+              type="button"
+              className={`${styles.viewToggleBtn} ${viewMode === "grid" ? styles.viewToggleActive : ""}`}
+              onClick={() => setViewMode("grid")}
+              title="Tampilan kotak grid"
+            >
+              ⊞ Grid
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {viewMode === "slider" ? (
+        <div
+          ref={sliderRef}
+          className={styles.routesSlider}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUpOrLeave}
+          onMouseLeave={handleMouseUpOrLeave}
+          role="region"
+          aria-label="Daftar rute bus geser horizontal"
+        >
+          {routes.map((route) => (
+            <RouteCard key={route.route_id} route={route} onSelect={onSelectRoute} isSlider />
+          ))}
+        </div>
+      ) : (
+        <div className={styles.routesGrid}>
+          {routes.map((route) => (
+            <RouteCard key={route.route_id} route={route} onSelect={onSelectRoute} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function RouteCard({
   route,
   onSelect,
+  isSlider = false,
 }: {
   route: TransjakartaRoute;
   onSelect: (route: TransjakartaRoute) => void;
+  isSlider?: boolean;
 }) {
   const isTransPatriot = route.service_type === "Trans Patriot";
   const isRoyal = route.service_type === "Royaltrans";
@@ -282,7 +507,7 @@ function RouteCard({
 
   return (
     <div
-      className={styles.routeCard}
+      className={`${styles.routeCard} ${isSlider ? styles.routeCardSlider : ""}`}
       onClick={() => onSelect(route)}
       role="button"
       tabIndex={0}

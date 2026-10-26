@@ -11,6 +11,7 @@ Antarmuka web dashboard real-time untuk pemantauan jadwal KRL Commuter Line kori
    - Indikator hitung mundur (*countdown*) dengan warna urgensi interaktif (kedip saat `< 2 menit`).
 2. **Hub Integrasi Antarmoda (Transjakarta & Trans Patriot)**:
    - Menampilkan halte transit terdekat dari peron stasiun aktif lengkap dengan estimasi jarak (meter) dan waktu jalan kaki (menit).
+   - **Mode Tampilan Geser Penuh (Slider) & Grid**: Penjelajahan kartu rute bus dengan rel horizontal interaktif (*touch swipe / mouse drag / slider navigation*) serta mode grid responsif anti-overflow.
    - Tab **Di Stasiun Ini**: Daftar rute bus penghubung langsung di stasiun yang sedang dipilih.
    - Tab **Semua Rute Bekasi — Jakarta**: Rute BRT layang & jalan tol (B11 Summarecon-Tosari, B12 Summarecon-Tj. Priok, B21 Bekasi Timur-Grogol, B22 Bekasi Timur-Juanda, Koridor 11 Pulo Gebang-Kp. Melayu, dan Royaltrans).
    - Tab **Panduan Transfer**: Panduan fisik navigasi pindah moda seperti Skybridge Cakung lantai 2 (tanpa keluar jalan raya), Pintu Selatan Stasiun Bekasi, JPO Jatinegara, dan Terminal Terpadu Bekasi Timur.

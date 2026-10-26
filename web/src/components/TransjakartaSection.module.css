@@ -26,22 +26,8 @@
 .head {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-}
-
-@media (min-width: 900px) {
-  .head {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-end;
-  }
-}
-
-.headLeft {
-  display: flex;
-  flex-direction: column;
   gap: var(--space-2);
-  max-width: 640px;
+  width: 100%;
 }
 
 .headBadge {
@@ -79,6 +65,62 @@
   margin: 0;
 }
 
+/* Dedicated Tab Switcher Row (Full Width, Never Cramped) */
+.tabNavRow {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: var(--space-3);
+  margin-top: calc(-1 * var(--space-1));
+}
+
+.tabGroupWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.tabScrollBtn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-full);
+  background: var(--surface-solid);
+  border: 1px solid var(--rule);
+  color: var(--text);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  z-index: 5;
+  transition: all var(--dur-fast) ease;
+}
+
+.tabScrollBtn:hover {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.tabScrollBtnLeft {
+  left: 4px;
+}
+
+.tabScrollBtnRight {
+  right: 4px;
+}
+
+.tabScrollBtn[data-visible="true"] {
+  display: flex;
+}
+
 /* Tabs */
 .tabGroup {
   display: flex;
@@ -86,30 +128,71 @@
   gap: var(--space-2);
   background: var(--surface-2);
   border: 1px solid var(--rule);
-  padding: 4px;
+  padding: 5px;
   border-radius: var(--radius);
   overflow-x: auto;
-  scrollbar-width: none;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scroll-padding: 0 12px;
+  width: 100%;
+  min-width: 0;
+  cursor: grab;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule-strong) transparent;
+}
+
+.tabGroup:active {
+  cursor: grabbing;
+}
+
+.tabGroup::after {
+  content: "";
+  display: block;
+  width: 12px;
+  min-width: 12px;
+  flex-shrink: 0;
 }
 
 .tabGroup::-webkit-scrollbar {
-  display: none;
+  height: 4px;
+}
+
+.tabGroup::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tabGroup::-webkit-scrollbar-thumb {
+  background: var(--rule-strong);
+  border-radius: var(--radius-full);
+}
+
+.tabGroup::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }
 
 .tabBtn {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: 8px 14px;
-  border: none;
+  padding: 9px 16px;
+  border: 1px solid transparent;
   background: transparent;
   color: var(--text-dim);
   font-size: var(--text-xs);
-  font-weight: 600;
+  font-weight: 700;
   border-radius: calc(var(--radius) - 2px);
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
+  user-select: none;
+  touch-action: pan-x;
   transition: all var(--dur-fast) ease;
+}
+
+.tabIcon {
+  font-size: 14px;
+  line-height: 1;
 }
 
 .tabBtn:hover {
@@ -273,6 +356,27 @@
   margin: 0;
 }
 
+.emptyActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-3);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all var(--dur-fast) ease;
+}
+
+.emptyActionBtn:hover {
+  filter: brightness(1.1);
+  transform: translateX(2px);
+}
+
 /* Notice */
 .allRoutesNotice {
   padding: 10px 14px;
@@ -288,20 +392,174 @@
   color: var(--text);
 }
 
-/* Routes Grid */
+/* Routes Controls & Layout */
+.routesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  min-width: 0;
+}
+
+.routesControlsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding: 2px 0;
+}
+
+.routesSummaryText {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+}
+
+.routesSummaryText strong {
+  color: var(--text);
+}
+
+.routesActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sliderNavBtns {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sliderNavBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-solid);
+  border: 1px solid var(--rule);
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--dur-fast) ease;
+}
+
+.sliderNavBtn:hover {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+.viewModeToggle {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  gap: 2px;
+}
+
+.viewToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: calc(var(--radius-sm) - 2px);
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--dur-fast) ease;
+  white-space: nowrap;
+}
+
+.viewToggleBtn:hover {
+  color: var(--text);
+}
+
+.viewToggleActive {
+  background: var(--surface-solid);
+  color: var(--accent);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .viewToggleActive {
+  background: var(--surface-3);
+  color: #38bdf8;
+}
+
+/* Mode Geser Penuh (Horizontal Slider) */
+.routesSlider {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 var(--space-1);
+  padding: 4px 4px var(--space-3) 4px;
+  width: 100%;
+  min-width: 0;
+  cursor: grab;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule-strong) transparent;
+}
+
+.routesSlider:active {
+  cursor: grabbing;
+}
+
+.routesSlider::after {
+  content: "";
+  display: block;
+  width: 16px;
+  min-width: 16px;
+  flex-shrink: 0;
+}
+
+.routesSlider::-webkit-scrollbar {
+  height: 6px;
+}
+
+.routesSlider::-webkit-scrollbar-track {
+  background: var(--surface-2);
+  border-radius: var(--radius-full);
+}
+
+.routesSlider::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: var(--radius-full);
+}
+
+.routeCardSlider {
+  width: min(85vw, 340px);
+  min-width: min(85vw, 340px);
+  max-width: 360px;
+  flex: 0 0 min(85vw, 340px);
+  scroll-snap-align: start;
+}
+
+/* Routes Grid Mode */
 .routesGrid {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-3);
+  width: 100%;
+  min-width: 0;
 }
 
-@media (min-width: 680px) {
+@media (min-width: 780px) {
   .routesGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr));
   }
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 1200px) {
   .routesGrid {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -318,6 +576,8 @@
   cursor: pointer;
   transition: all var(--dur-fast) cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .routeCard:hover {
@@ -335,12 +595,16 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: var(--space-2);
+  gap: 8px;
+  min-width: 0;
 }
 
 .badgeWrapper {
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .routeIdBadge {
@@ -388,6 +652,7 @@
   background: rgba(16, 185, 129, 0.12);
   padding: 3px 8px;
   border-radius: var(--radius-full);
+  flex-shrink: 0;
 }
 
 [data-theme="dark"] .fareBadge {
@@ -400,6 +665,8 @@
   color: var(--text);
   margin: 0 0 2px 0;
   line-height: 1.35;
+  word-break: break-word;
+  min-width: 0;
 }
 
 .routeCorridor {
@@ -407,6 +674,8 @@
   font-weight: 600;
   color: var(--accent);
   margin-bottom: 8px;
+  word-break: break-word;
+  min-width: 0;
 }
 
 .routeDesc {
@@ -419,6 +688,8 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   flex: 1;
+  word-break: break-word;
+  min-width: 0;
 }
 
 .cardFooter {
@@ -428,11 +699,14 @@
   padding-top: var(--space-2);
   border-top: 1px dashed var(--rule);
   margin-bottom: var(--space-2);
+  gap: 8px;
+  min-width: 0;
 }
 
 .metaCol {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .metaLabel {
@@ -455,6 +729,8 @@
   padding: 6px 10px;
   border-radius: var(--radius-xs);
   font-size: 11px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .stopIcon {
@@ -469,6 +745,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   flex: 1;
+  min-width: 0;
 }
 
 .detailLink {
