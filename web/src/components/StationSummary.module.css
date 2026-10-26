@@ -1,0 +1,443 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Hero Banner */
+.heroBanner {
+  background: var(--surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  box-shadow: var(--card-shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.heroBanner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--line-cikarang-gradient);
+}
+
+.heroLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.heroBadgeRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.heroBadge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--accent);
+}
+
+.regionTag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dim);
+  background: var(--surface-2);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--rule);
+}
+
+.liveTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ok);
+  background: var(--ok-soft);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--ok);
+}
+
+.pulseDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ok);
+  animation: radarPing 1.8s infinite;
+}
+
+.stationName {
+  font-size: var(--text-2xl);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1.15;
+  margin-top: 2px;
+}
+
+.stationCode {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.heroDesc {
+  font-size: var(--text-xs);
+  color: var(--text-faint);
+  margin-top: 2px;
+}
+
+/* Operating Hours */
+.operatingHours {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.opLabel {
+  font-size: 10.5px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.opTimeBox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.opDivider {
+  color: var(--accent);
+}
+
+/* Metric Cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+
+.card,
+.skeletonCard {
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform var(--dur) var(--ease-spring),
+              box-shadow var(--dur) var(--ease-out),
+              border-color var(--dur) var(--ease-out);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow-hover);
+  border-color: var(--accent);
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cardLabel {
+  font-size: 11px;
+  color: var(--text-faint);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.cardIcon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.cardValue {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: var(--space-2) 0 var(--space-1);
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+}
+
+.cardValueSmall {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: var(--space-2) 0 var(--space-1);
+}
+
+.timeItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.timeTag {
+  font-size: 11px;
+  color: var(--text-faint);
+  font-weight: 500;
+}
+
+.cardUnit {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+.cardDesc {
+  font-size: 11.5px;
+  color: var(--text-faint);
+}
+
+/* Hourly Chart Box */
+.chartBox {
+  padding: var(--space-5);
+  background: var(--surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  transition: border-color var(--dur) var(--ease-out);
+}
+
+.chartHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.chartTitle {
+  font-size: var(--text-sm);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text);
+}
+
+.chartSub {
+  font-size: var(--text-xs);
+  color: var(--text-faint);
+  margin-top: 2px;
+}
+
+.chartLegend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-size: 11.5px;
+  color: var(--text-dim);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legendDotCurrent,
+.legendDotPeak {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.legendDotCurrent {
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+.legendDotPeak {
+  background: var(--signal);
+  box-shadow: 0 0 6px var(--signal-glow);
+}
+
+.chartBars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 150px;
+  padding-bottom: 26px;
+  position: relative;
+  overflow-x: auto;
+}
+
+.barCol {
+  flex: 1;
+  min-width: 26px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+
+.barCol:hover {
+  transform: translateY(-2px);
+}
+
+.barTrack {
+  width: 100%;
+  max-width: 18px;
+  height: calc(100% - 24px);
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+}
+
+.barFill {
+  width: 100%;
+  background: linear-gradient(to top, var(--rule-strong), var(--text-dim));
+  border-radius: var(--radius-sm);
+  transition: height 0.5s cubic-bezier(0.34, 1.4, 0.64, 1),
+              background var(--dur-fast) var(--ease-out);
+}
+
+.barValue {
+  position: absolute;
+  top: -20px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-faint);
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+  pointer-events: none;
+}
+
+.barLabel {
+  position: absolute;
+  bottom: -22px;
+  font-size: 11px;
+  color: var(--text-faint);
+  font-weight: 600;
+}
+
+.barCol:hover .barFill {
+  background: linear-gradient(to top, var(--text-dim), var(--text));
+}
+
+.barCol:hover .barValue {
+  opacity: 1;
+}
+
+/* Peak hours styling */
+.barCol[data-peak="true"] .barFill {
+  background: linear-gradient(to top, #d97706, #fbbf24);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.35);
+}
+
+/* Current hour styling */
+.barCol[data-current="true"] .barFill {
+  background: linear-gradient(to top, #0284c7, #38bdf8);
+  box-shadow: 0 0 14px var(--accent-glow);
+}
+
+.barCol[data-current="true"] .barLabel {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.barCol[data-current="true"] .barValue {
+  opacity: 1;
+  color: var(--accent);
+}
+
+/* Floating Tooltip */
+.barTooltip {
+  position: absolute;
+  top: -46px;
+  background: var(--surface-solid);
+  border: 1px solid var(--accent);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+  pointer-events: none;
+  animation: floatGlow 1.5s infinite;
+}
+
+.barTooltip span {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1.1;
+}
+
+.tooltipSub {
+  font-size: 9.5px !important;
+  color: var(--text-faint) !important;
+  font-weight: 500 !important;
+}
+
+@media (max-width: 960px) {
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 580px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .operatingHours {
+    align-items: flex-start;
+  }
+}

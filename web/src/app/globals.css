@@ -1,0 +1,332 @@
+/* ==========================================================================
+   Dashboard Transportasi Publik Bekasi — Modern Transit Design System
+   Bahasa visual: Glassmorphism modern, ambient lighting, neon accents KRL,
+   smooth physics micro-animations, dan high-contrast accessibility.
+   ========================================================================== */
+
+:root {
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --radius-full: 9999px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  --text-xs: 11.5px;
+  --text-sm: 13px;
+  --text-base: 14.5px;
+  --text-md: 17px;
+  --text-lg: 21px;
+  --text-xl: 28px;
+  --text-2xl: 42px;
+
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 150ms;
+  --dur: 280ms;
+  --dur-slow: 450ms;
+
+  /* Warna jalur resmi KRL Commuter Line Cikarang & neon accents */
+  --line-cikarang: #0084d8;
+  --line-cikarang-glow: rgba(0, 132, 216, 0.45);
+  --line-cikarang-gradient: linear-gradient(135deg, #0084d8 0%, #00b4d8 100%);
+  --cyan-accent: #06b6d4;
+
+  color-scheme: light dark;
+}
+
+/* ---- Tema Terang -------------------------------------------------------- */
+:root,
+[data-theme="light"] {
+  --bg: #f5f7fa;
+  --bg-gradient: radial-gradient(circle at 50% 0%, rgba(0, 132, 216, 0.08) 0%, transparent 60%),
+                 radial-gradient(circle at 100% 40%, rgba(6, 182, 212, 0.05) 0%, transparent 50%),
+                 #f5f7fa;
+  --surface: rgba(255, 255, 255, 0.82);
+  --surface-solid: #ffffff;
+  --surface-2: rgba(240, 244, 249, 0.9);
+  --surface-3: #e2e8f0;
+  --surface-glow: rgba(255, 255, 255, 0.9);
+  
+  --rule: rgba(203, 213, 225, 0.7);
+  --rule-strong: rgba(148, 163, 184, 0.8);
+  --rule-glow: rgba(0, 132, 216, 0.3);
+
+  --text: #0f172a;
+  --text-dim: #475569;
+  --text-faint: #64748b;
+
+  --accent: #0284c7;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(2, 132, 199, 0.12);
+  --accent-glow: rgba(2, 132, 199, 0.25);
+
+  --signal: #d97706;
+  --signal-soft: rgba(217, 119, 6, 0.14);
+  --signal-glow: rgba(217, 119, 6, 0.3);
+
+  --ok: #10b981;
+  --ok-soft: rgba(16, 185, 129, 0.14);
+  --ok-glow: rgba(16, 185, 129, 0.3);
+
+  --err: #ef4444;
+  --focus: #0284c7;
+
+  --card-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+  --card-shadow-hover: 0 16px 32px -6px rgba(0, 132, 216, 0.12), 0 6px 12px -2px rgba(15, 23, 42, 0.05);
+  --shadow-pop: 0 20px 48px -12px rgba(15, 23, 42, 0.25);
+
+  color-scheme: light;
+}
+
+/* ---- Tema Gelap --------------------------------------------------------- */
+[data-theme="dark"] {
+  --bg: #090d14;
+  --bg-gradient: radial-gradient(circle at 50% -10%, rgba(0, 132, 216, 0.22) 0%, transparent 60%),
+                 radial-gradient(circle at 100% 30%, rgba(6, 182, 212, 0.12) 0%, transparent 50%),
+                 radial-gradient(circle at 0% 70%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+                 #090d14;
+  --surface: rgba(15, 23, 36, 0.75);
+  --surface-solid: #0f172a;
+  --surface-2: rgba(24, 34, 52, 0.85);
+  --surface-3: #1e293b;
+  --surface-glow: rgba(255, 255, 255, 0.04);
+
+  --rule: rgba(255, 255, 255, 0.08);
+  --rule-strong: rgba(255, 255, 255, 0.16);
+  --rule-glow: rgba(0, 132, 216, 0.5);
+
+  --text: #f8fafc;
+  --text-dim: #94a3b8;
+  --text-faint: #64748b;
+
+  --accent: #38bdf8;
+  --accent-ink: #030712;
+  --accent-soft: rgba(56, 189, 248, 0.14);
+  --accent-glow: rgba(56, 189, 248, 0.35);
+
+  --signal: #fbbf24;
+  --signal-soft: rgba(251, 191, 36, 0.15);
+  --signal-glow: rgba(251, 191, 36, 0.4);
+
+  --ok: #34d399;
+  --ok-soft: rgba(52, 211, 153, 0.15);
+  --ok-glow: rgba(52, 211, 153, 0.4);
+
+  --err: #f87171;
+  --focus: #38bdf8;
+
+  --card-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --card-shadow-hover: 0 20px 40px -8px rgba(0, 132, 216, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --shadow-pop: 0 24px 60px -12px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+  color-scheme: dark;
+}
+
+/* Fallback tanpa JS: ikuti preferensi sistem */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg: #090d14;
+    --bg-gradient: radial-gradient(circle at 50% -10%, rgba(0, 132, 216, 0.22) 0%, transparent 60%),
+                   radial-gradient(circle at 100% 30%, rgba(6, 182, 212, 0.12) 0%, transparent 50%),
+                   #090d14;
+    --surface: rgba(15, 23, 36, 0.75);
+    --surface-solid: #0f172a;
+    --surface-2: rgba(24, 34, 52, 0.85);
+    --surface-3: #1e293b;
+    --rule: rgba(255, 255, 255, 0.08);
+    --rule-strong: rgba(255, 255, 255, 0.16);
+    --rule-glow: rgba(0, 132, 216, 0.5);
+    --text: #f8fafc;
+    --text-dim: #94a3b8;
+    --text-faint: #64748b;
+    --accent: #38bdf8;
+    --accent-ink: #030712;
+    --accent-soft: rgba(56, 189, 248, 0.14);
+    --accent-glow: rgba(56, 189, 248, 0.35);
+    --signal: #fbbf24;
+    --signal-soft: rgba(251, 191, 36, 0.15);
+    --ok: #34d399;
+    --err: #f87171;
+    --focus: #38bdf8;
+    color-scheme: dark;
+  }
+}
+
+/* ==========================================================================
+   Reset & Base Styles
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* ==========================================================================
+   Utilitas & Animasi Kelas Dunia
+   ========================================================================== */
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "zero" 1;
+}
+
+.label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.glass-panel {
+  background: var(--surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  transition: transform var(--dur) var(--ease-spring),
+              box-shadow var(--dur) var(--ease-out),
+              border-color var(--dur) var(--ease-out);
+}
+
+.glass-panel:hover {
+  border-color: var(--rule-strong);
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--surface-2) 0 40%, var(--surface-3) 50%, var(--surface-2) 60% 100%);
+  background-size: 250% 100%;
+  animation: shimmer 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+/* Ripple Beacon Pulse */
+@keyframes beaconPulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 var(--signal-glow);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 8px rgba(0, 0, 0, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+/* Radar Ping */
+@keyframes radarPing {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+/* Float Glow */
+@keyframes floatGlow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

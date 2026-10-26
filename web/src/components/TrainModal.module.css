@@ -1,0 +1,332 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  animation: overlayFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  background: var(--surface-solid);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 540px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-pop);
+  overflow: hidden;
+  animation: modalSlideUp 0.28s var(--ease-spring);
+}
+
+@keyframes modalSlideUp {
+  from {
+    transform: translateY(20px) scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.header {
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  background: var(--surface-2);
+}
+
+.titleArea {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.linePill {
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-weight: 800;
+  font-size: var(--text-sm);
+  box-shadow: 0 2px 8px rgba(0, 132, 216, 0.4);
+}
+
+.trainTitle {
+  font-size: var(--text-base);
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.trainRoute {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.closeBtn {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-3);
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.closeBtn:hover {
+  background: var(--err);
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+.statusBar {
+  padding: 8px var(--space-5);
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+}
+
+.statusLabel {
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.sourceTime {
+  color: var(--text-faint);
+}
+
+.body {
+  padding: var(--space-4) var(--space-5);
+  overflow-y: auto;
+  max-height: calc(85vh - 150px);
+}
+
+.loading {
+  padding: var(--space-3) 0;
+}
+
+.skeletonStop {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px 0;
+}
+
+.errorBox,
+.emptyText {
+  padding: var(--space-6) 0;
+  text-align: center;
+  font-size: var(--text-sm);
+}
+
+.errorText {
+  color: var(--err);
+  font-weight: 600;
+}
+
+.retryBtn {
+  margin-top: 10px;
+  padding: 6px 14px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-full);
+}
+
+/* Timeline */
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.stopItem {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: var(--space-3);
+  align-items: center;
+  position: relative;
+  min-height: 48px;
+}
+
+.markerTrack {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trackLine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--rule-strong);
+  border-radius: var(--radius-full);
+}
+
+.stopItem:first-child .trackLine {
+  top: 50%;
+}
+
+.stopItem:last-child .trackLine {
+  bottom: 50%;
+}
+
+.markerDot {
+  position: relative;
+  z-index: 2;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--surface-3);
+  background: var(--surface-solid);
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-faint);
+  transition: all var(--dur-fast) var(--ease-spring);
+}
+
+.stopInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.stationNameRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.stopName {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.stationCode {
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.bekasiTag {
+  font-size: 9.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.nextTag {
+  font-size: 9.5px;
+  font-weight: 800;
+  padding: 1px 8px;
+  border-radius: var(--radius-full);
+  background: var(--signal-soft);
+  color: var(--signal);
+  border: 1px solid var(--signal);
+  animation: floatGlow 1.5s infinite;
+}
+
+.stopTime {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Status variants */
+.stopItem[data-status="passed"] {
+  opacity: 0.45;
+}
+
+.stopItem[data-status="passed"] .markerDot {
+  background: var(--surface-3);
+  border-color: var(--surface-3);
+  color: var(--text-dim);
+}
+
+.stopItem[data-status="passed"] .trackLine {
+  background: var(--rule);
+}
+
+.stopItem[data-status="next"] .markerDot {
+  border-color: var(--signal);
+  background: var(--signal);
+  color: #000;
+  box-shadow: 0 0 14px var(--signal-glow);
+  transform: scale(1.15);
+}
+
+.stopItem[data-status="next"] .stopName {
+  color: var(--signal);
+  font-weight: 800;
+}
+
+.stopItem[data-status="next"] .stopTime {
+  color: var(--signal);
+}
+
+.stopItem[data-status="upcoming"] .markerDot {
+  border-color: var(--accent);
+}
+
+.stopItem[data-status="upcoming"] .trackLine {
+  background: var(--line-cikarang);
+}
+
+.footer {
+  padding: var(--space-3) var(--space-5);
+  border-top: 1px solid var(--rule);
+  background: var(--surface-2);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.doneBtn {
+  padding: 8px 20px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  box-shadow: 0 2px 8px var(--accent-glow);
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.doneBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px var(--accent-glow);
+}

@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-10-24T22:42:50+07:00",
+  "provider": "comuline",
+  "stations": [
+    "JNG",
+    "KLD",
+    "BUA",
+    "KLDB",
+    "CUK",
+    "KRI",
+    "BKS",
+    "BKST",
+    "TB",
+    "CIT",
+    "TLM",
+    "CKR"
+  ],
+  "failed": []
+}

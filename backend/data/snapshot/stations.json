@@ -1,0 +1,557 @@
+[
+ {
+  "id": "AC",
+  "name": "Ancol",
+  "is_bekasi": false
+ },
+ {
+  "id": "AK",
+  "name": "Angke",
+  "is_bekasi": false
+ },
+ {
+  "id": "BBN",
+  "name": "Brambanan",
+  "is_bekasi": false
+ },
+ {
+  "id": "BJD",
+  "name": "Bojonggede",
+  "is_bekasi": false
+ },
+ {
+  "id": "BKS",
+  "name": "Bekasi",
+  "is_bekasi": true
+ },
+ {
+  "id": "BKST",
+  "name": "Bekasi Timur",
+  "is_bekasi": true
+ },
+ {
+  "id": "BOI",
+  "name": "Bojong Indah",
+  "is_bekasi": false
+ },
+ {
+  "id": "BOO",
+  "name": "Bogor",
+  "is_bekasi": false
+ },
+ {
+  "id": "BPR",
+  "name": "Batu Ceper",
+  "is_bekasi": false
+ },
+ {
+  "id": "BST",
+  "name": "Bandara Soekarno Hatta",
+  "is_bekasi": false
+ },
+ {
+  "id": "BUA",
+  "name": "Buaran",
+  "is_bekasi": false
+ },
+ {
+  "id": "CBN",
+  "name": "Cibinong",
+  "is_bekasi": false
+ },
+ {
+  "id": "CC",
+  "name": "Cicayur",
+  "is_bekasi": false
+ },
+ {
+  "id": "CE",
+  "name": "Ceper",
+  "is_bekasi": false
+ },
+ {
+  "id": "CIT",
+  "name": "Cibitung",
+  "is_bekasi": true
+ },
+ {
+  "id": "CJT",
+  "name": "Cilejit",
+  "is_bekasi": false
+ },
+ {
+  "id": "CKI",
+  "name": "Cikini",
+  "is_bekasi": false
+ },
+ {
+  "id": "CKL",
+  "name": "Cikeusal",
+  "is_bekasi": false
+ },
+ {
+  "id": "CKR",
+  "name": "Cikarang",
+  "is_bekasi": true
+ },
+ {
+  "id": "CKY",
+  "name": "Cikoya",
+  "is_bekasi": false
+ },
+ {
+  "id": "CLG",
+  "name": "Cilegon",
+  "is_bekasi": false
+ },
+ {
+  "id": "CLT",
+  "name": "Cilebut",
+  "is_bekasi": false
+ },
+ {
+  "id": "CSK",
+  "name": "Cisauk",
+  "is_bekasi": false
+ },
+ {
+  "id": "CT",
+  "name": "Catang",
+  "is_bekasi": false
+ },
+ {
+  "id": "CTA",
+  "name": "Citayam",
+  "is_bekasi": false
+ },
+ {
+  "id": "CTR",
+  "name": "Citeras",
+  "is_bekasi": false
+ },
+ {
+  "id": "CUK",
+  "name": "Cakung",
+  "is_bekasi": false
+ },
+ {
+  "id": "CW",
+  "name": "Cawang",
+  "is_bekasi": false
+ },
+ {
+  "id": "DAR",
+  "name": "Daru",
+  "is_bekasi": false
+ },
+ {
+  "id": "DL",
+  "name": "Delanggu",
+  "is_bekasi": false
+ },
+ {
+  "id": "DP",
+  "name": "Depok",
+  "is_bekasi": false
+ },
+ {
+  "id": "DPB",
+  "name": "Depok Baru",
+  "is_bekasi": false
+ },
+ {
+  "id": "DRN",
+  "name": "Duren Kalibata",
+  "is_bekasi": false
+ },
+ {
+  "id": "DU",
+  "name": "Duri",
+  "is_bekasi": false
+ },
+ {
+  "id": "GDD",
+  "name": "Gondangdia",
+  "is_bekasi": false
+ },
+ {
+  "id": "GGL",
+  "name": "Grogol",
+  "is_bekasi": false
+ },
+ {
+  "id": "GST",
+  "name": "Gang Sentiong",
+  "is_bekasi": false
+ },
+ {
+  "id": "GW",
+  "name": "Gawok",
+  "is_bekasi": false
+ },
+ {
+  "id": "JAKK",
+  "name": "Jakarta Kota",
+  "is_bekasi": false
+ },
+ {
+  "id": "JAY",
+  "name": "Jayakarta",
+  "is_bekasi": false
+ },
+ {
+  "id": "JBU",
+  "name": "Jambu Baru",
+  "is_bekasi": false
+ },
+ {
+  "id": "JMU",
+  "name": "Jurang Mangu",
+  "is_bekasi": false
+ },
+ {
+  "id": "JN",
+  "name": "Jenar",
+  "is_bekasi": false
+ },
+ {
+  "id": "JNG",
+  "name": "Jatinegara",
+  "is_bekasi": false
+ },
+ {
+  "id": "JUA",
+  "name": "Juanda",
+  "is_bekasi": false
+ },
+ {
+  "id": "KAT",
+  "name": "Karet",
+  "is_bekasi": false
+ },
+ {
+  "id": "KBY",
+  "name": "Kebayoran",
+  "is_bekasi": false
+ },
+ {
+  "id": "KDS",
+  "name": "Kalideres",
+  "is_bekasi": false
+ },
+ {
+  "id": "KEN",
+  "name": "Krenceng",
+  "is_bekasi": false
+ },
+ {
+  "id": "KLD",
+  "name": "Klender",
+  "is_bekasi": false
+ },
+ {
+  "id": "KLDB",
+  "name": "Klender Baru",
+  "is_bekasi": false
+ },
+ {
+  "id": "KMO",
+  "name": "Kemayoran",
+  "is_bekasi": false
+ },
+ {
+  "id": "KMT",
+  "name": "Kramat",
+  "is_bekasi": false
+ },
+ {
+  "id": "KPB",
+  "name": "Kampung Bandan",
+  "is_bekasi": false
+ },
+ {
+  "id": "KRA",
+  "name": "Karangantu",
+  "is_bekasi": false
+ },
+ {
+  "id": "KRI",
+  "name": "Kranji",
+  "is_bekasi": true
+ },
+ {
+  "id": "KT",
+  "name": "Klaten",
+  "is_bekasi": false
+ },
+ {
+  "id": "KTA",
+  "name": "Kutoarjo",
+  "is_bekasi": false
+ },
+ {
+  "id": "LNA",
+  "name": "Lenteng Agung",
+  "is_bekasi": false
+ },
+ {
+  "id": "LPN",
+  "name": "Lempuyangan",
+  "is_bekasi": false
+ },
+ {
+  "id": "MER",
+  "name": "Merak",
+  "is_bekasi": false
+ },
+ {
+  "id": "MGB",
+  "name": "Mangga Besar",
+  "is_bekasi": false
+ },
+ {
+  "id": "MGW",
+  "name": "Maguwo",
+  "is_bekasi": false
+ },
+ {
+  "id": "MJ",
+  "name": "Maja",
+  "is_bekasi": false
+ },
+ {
+  "id": "MRI",
+  "name": "Manggarai",
+  "is_bekasi": false
+ },
+ {
+  "id": "MTR",
+  "name": "Matraman",
+  "is_bekasi": false
+ },
+ {
+  "id": "NMO",
+  "name": "Nambo",
+  "is_bekasi": false
+ },
+ {
+  "id": "PDJ",
+  "name": "Pondok Ranji",
+  "is_bekasi": false
+ },
+ {
+  "id": "PDRG",
+  "name": "Pondok Rajeg",
+  "is_bekasi": false
+ },
+ {
+  "id": "PI",
+  "name": "Poris",
+  "is_bekasi": false
+ },
+ {
+  "id": "PL",
+  "name": "Palur",
+  "is_bekasi": false
+ },
+ {
+  "id": "PLM",
+  "name": "Palmerah",
+  "is_bekasi": false
+ },
+ {
+  "id": "POC",
+  "name": "Pondok Cina",
+  "is_bekasi": false
+ },
+ {
+  "id": "POK",
+  "name": "Pondok Jati",
+  "is_bekasi": false
+ },
+ {
+  "id": "PRP",
+  "name": "Parung Panjang",
+  "is_bekasi": false
+ },
+ {
+  "id": "PSE",
+  "name": "Pasar Senen",
+  "is_bekasi": false
+ },
+ {
+  "id": "PSG",
+  "name": "Pesing",
+  "is_bekasi": false
+ },
+ {
+  "id": "PSM",
+  "name": "Pasar Minggu",
+  "is_bekasi": false
+ },
+ {
+  "id": "PSMB",
+  "name": "Pasar Minggu Baru",
+  "is_bekasi": false
+ },
+ {
+  "id": "PWS",
+  "name": "Purwosari",
+  "is_bekasi": false
+ },
+ {
+  "id": "RJW",
+  "name": "Rajawali",
+  "is_bekasi": false
+ },
+ {
+  "id": "RK",
+  "name": "Rangkasbitung",
+  "is_bekasi": false
+ },
+ {
+  "id": "RU",
+  "name": "Rawa Buntu",
+  "is_bekasi": false
+ },
+ {
+  "id": "RW",
+  "name": "Rawa Buaya",
+  "is_bekasi": false
+ },
+ {
+  "id": "SDM",
+  "name": "Sudimara",
+  "is_bekasi": false
+ },
+ {
+  "id": "SG",
+  "name": "Serang",
+  "is_bekasi": false
+ },
+ {
+  "id": "SK",
+  "name": "Solo Jebres",
+  "is_bekasi": false
+ },
+ {
+  "id": "SLO",
+  "name": "Solo Balapan",
+  "is_bekasi": false
+ },
+ {
+  "id": "SRP",
+  "name": "Serpong",
+  "is_bekasi": false
+ },
+ {
+  "id": "SUD",
+  "name": "Sudirman",
+  "is_bekasi": false
+ },
+ {
+  "id": "SUDB",
+  "name": "Sudirman Baru",
+  "is_bekasi": false
+ },
+ {
+  "id": "SW",
+  "name": "Sawah Besar",
+  "is_bekasi": false
+ },
+ {
+  "id": "SWT",
+  "name": "Srowot",
+  "is_bekasi": false
+ },
+ {
+  "id": "TB",
+  "name": "Tambun",
+  "is_bekasi": true
+ },
+ {
+  "id": "TEB",
+  "name": "Tebet",
+  "is_bekasi": false
+ },
+ {
+  "id": "TEJ",
+  "name": "Tenjo",
+  "is_bekasi": false
+ },
+ {
+  "id": "TGS",
+  "name": "Tigaraksa",
+  "is_bekasi": false
+ },
+ {
+  "id": "THB",
+  "name": "Tanah Abang",
+  "is_bekasi": false
+ },
+ {
+  "id": "TKO",
+  "name": "Taman Kota",
+  "is_bekasi": false
+ },
+ {
+  "id": "TLM",
+  "name": "Metland Telagamurni",
+  "is_bekasi": true
+ },
+ {
+  "id": "TNG",
+  "name": "Tangerang",
+  "is_bekasi": false
+ },
+ {
+  "id": "TNT",
+  "name": "Tanjung Barat",
+  "is_bekasi": false
+ },
+ {
+  "id": "TOJB",
+  "name": "Tonjong Baru",
+  "is_bekasi": false
+ },
+ {
+  "id": "TPK",
+  "name": "Tanjung Priok",
+  "is_bekasi": false
+ },
+ {
+  "id": "TTI",
+  "name": "Tanah Tinggi",
+  "is_bekasi": false
+ },
+ {
+  "id": "UI",
+  "name": "Univ. Indonesia",
+  "is_bekasi": false
+ },
+ {
+  "id": "UP",
+  "name": "Univ. Pancasila",
+  "is_bekasi": false
+ },
+ {
+  "id": "WJ",
+  "name": "Wojo",
+  "is_bekasi": false
+ },
+ {
+  "id": "WLT",
+  "name": "Walantaka",
+  "is_bekasi": false
+ },
+ {
+  "id": "WT",
+  "name": "Wates",
+  "is_bekasi": false
+ },
+ {
+  "id": "YK",
+  "name": "Yogyakarta",
+  "is_bekasi": false
+ }
+]
