@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, IBM_Plex_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, IBM_Plex_Mono } from "next/font/google";
 import { THEME_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
-const archivo = Archivo({
+const archivo = Plus_Jakarta_Sans({
   variable: "--font-archivo",
   subsets: ["latin"],
   display: "swap",
@@ -21,6 +21,7 @@ export const metadata: Metadata = {
   description:
     "Panduan perjalanan transportasi umum Jabodetabek, jadwal KRL, dan informasi bus.",
   applicationName: "TransitKita",
+  icons: { icon: "/transitkita.svg", apple: "/transitkita.svg" },
 };
 
 export const viewport: Viewport = {
