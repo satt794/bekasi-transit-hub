@@ -295,3 +295,30 @@ def test_station_and_departure_platform(service: TransitService):
         assert d.platform in ("Peron 3", "Peron 4")
     for d in res.departures["cikarang"]:
         assert d.platform in ("Peron 1", "Peron 2")
+
+
+def test_trips_reject_reverse_terminal_even_when_times_match(snapshot_dir: Path):
+    wrong = dep("5129", "CIKARANG", "ANGKE", "06:00", "07:00", oid="CKR", did="AK")
+    correct = dep("6002", "KAMPUNGBANDAN", "CIKARANG", "06:10", "06:40", oid="KPB", did="CKR")
+    (snapshot_dir / "schedules" / "BKS.json").write_text(json.dumps([wrong, correct]))
+    (snapshot_dir / "schedules" / "CKR.json").write_text(json.dumps([
+        {**wrong, "departs": "06:30"},
+        {**correct, "departs": "06:40"},
+        {**correct, "origin_id": "CKR", "origin_name": "CIKARANG",
+         "destination_id": "AK", "destination_name": "ANGKE", "departs": "06:50"},
+    ]))
+    svc = TransitService([SnapshotProvider(snapshot_dir)])
+    result = run(svc.trips("BKS", "CKR", now=at(5, 0), limit=1))
+    assert [trip.train_id for trip in result.trips] == ["6002"]
+    assert result.trips[0].destination_name == "Cikarang"
+    assert result.trips[0].duration_min == 30
+
+
+def test_trips_reject_mismatched_origin_and_destination(snapshot_dir: Path):
+    row = dep("6002", "KAMPUNGBANDAN", "CIKARANG", "06:10", "06:40", oid="KPB", did="CKR")
+    (snapshot_dir / "schedules" / "BKS.json").write_text(json.dumps([row]))
+    (snapshot_dir / "schedules" / "CKR.json").write_text(json.dumps([
+        {**row, "origin_id": "MRI", "origin_name": "MANGGARAI", "departs": "06:40"}
+    ]))
+    svc = TransitService([SnapshotProvider(snapshot_dir)])
+    assert run(svc.trips("BKS", "CKR", now=at(5, 0))).trips == []

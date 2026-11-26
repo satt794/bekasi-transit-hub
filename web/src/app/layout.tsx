@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, IBM_Plex_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, IBM_Plex_Mono } from "next/font/google";
 import { THEME_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
-const archivo = Archivo({
+const archivo = Plus_Jakarta_Sans({
   variable: "--font-archivo",
   subsets: ["latin"],
   display: "swap",
@@ -17,15 +17,16 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bekasi Transit Hub — Jadwal KRL & Transjakarta Real-Time",
+  title: "TransitKita — Transportasi Jabodetabek",
   description:
-    "Platform transportasi publik terpadu (All-in-One) koridor Bekasi: pantau jadwal KRL Commuter Line real-time terintegrasi langsung dengan halte dan rute bus BRT Transjakarta & Trans Patriot.",
-  applicationName: "Bekasi Transit Hub",
+    "Panduan perjalanan transportasi umum Jabodetabek, jadwal KRL, dan informasi bus.",
+  applicationName: "TransitKita",
+  icons: { icon: "/transitkita.svg", apple: "/transitkita.svg" },
 };
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f2f0e9" },
+    { media: "(prefers-color-scheme: light)", color: "#0f766e" },
     { media: "(prefers-color-scheme: dark)", color: "#0f1011" },
   ],
 };

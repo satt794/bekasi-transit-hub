@@ -39,6 +39,7 @@ from app.models import (
 from app.scrapers import Provider, ProviderError, RouteResult
 from app.stations import (
     BEKASI_IDS,
+    CORRIDOR,
     BEKASI_STATIONS,
     KNOWN_NAMES,
     PLATFORM_GUIDES,
@@ -449,26 +450,79 @@ class TransitService:
             raise ValueError("Stasiun asal dan tujuan tidak boleh sama")
 
         a = await self._schedule(origin.id)
-        b = await self._schedule(destination.id)
+        try:
+            b = await self._schedule(destination.id)
+        except AllProvidersFailed:
+            # Terminal arrival can still be supplied by the origin schedule.
+            b = None
         directory = await self._directory()
         by_key = {name_key(s.name): s.id for s in directory.values()}
-        at_destination = {raw.train_id: raw for raw in b.value}
+        at_destination: dict[str, list[RawDeparture]] = {}
+        for raw in (b.value if b else []):
+            at_destination.setdefault(raw.train_id, []).append(raw)
+
+        def terminal(row: RawDeparture, start: bool) -> str | None:
+            sid, name = self._resolve(
+                row.origin_id if start else row.destination_id,
+                row.origin_name if start else row.destination_name,
+                directory, by_key,
+            )
+            return sid or (name_key(name) if name and name != "—" else None)
+
+        def matches(raw: RawDeparture, other: RawDeparture) -> bool:
+            if not is_passenger(raw.line) or not is_passenger(other.line):
+                return False
+            start, end = terminal(raw, True), terminal(raw, False)
+            if not start or not end or start != terminal(other, True) or end != terminal(other, False):
+                return False
+            if origin.id == end or destination.id == start:
+                return False
+            if origin.id in CORRIDOR and destination.id in CORRIDOR:
+                here, there = CORRIDOR.index(origin.id), CORRIDOR.index(destination.id)
+                # A train towards Jakarta cannot carry passengers eastward.
+                # For a westbound request, a terminal within the corridor must
+                # be at or beyond the requested destination.
+                if there > here and (end not in CORRIDOR or CORRIDOR.index(end) < there):
+                    return False
+                if there < here and end in CORRIDOR and CORRIDOR.index(end) > there:
+                    return False
+            return True
 
         sd = current_service_day(now)
         trips: list[Trip] = []
         for day in (sd - timedelta(days=1), sd, sd + timedelta(days=1)):
             for raw in a.value:
-                other = at_destination.get(raw.train_id)
-                if other is None or not is_passenger(raw.line):
-                    continue
                 departs_at = service_datetime(day, raw.departs)
-                arrives_at = service_datetime(day, other.departs)
-                duration = arrives_at - departs_at
-                # Kereta melintas ke arah sebaliknya, atau data tidak masuk akal.
-                if duration <= timedelta(0) or duration > timedelta(hours=4):
-                    continue
                 if departs_at < now:
                     continue
+                candidates = [
+                    service_datetime(day, other.departs)
+                    for other in at_destination.get(raw.train_id, [])
+                    if matches(raw, other)
+                    and timedelta(0) < service_datetime(day, other.departs) - departs_at <= timedelta(hours=4)
+                ]
+                if not is_passenger(raw.line) or terminal(raw, False) == origin.id:
+                    continue
+                # Terminus stations may omit departure records for arriving trains.
+                # The origin schedule carries the published final arrival time.
+                # Do not use a missing-record fallback when records with the
+                # same train number explicitly contradict the service identity.
+                matching_number = at_destination.get(raw.train_id, [])
+                identity_conflict = bool(matching_number) and not any(
+                    matches(raw, other) for other in matching_number
+                )
+                if (
+                    terminal(raw, False) == destination.id
+                    and raw.arrives is not None
+                    and not identity_conflict
+                ):
+                    final_arrival = service_datetime(day, raw.arrives)
+                    if timedelta(0) < final_arrival - departs_at <= timedelta(hours=4):
+                        candidates.append(final_arrival)
+                if not candidates:
+                    continue
+                arrives_at = min(candidates)
+                duration = arrives_at - departs_at
                 _, dest_name = self._resolve(
                     raw.destination_id, raw.destination_name, directory, by_key
                 )
@@ -486,7 +540,7 @@ class TransitService:
         trips.sort(key=lambda t: t.departs_at)
 
         source = a.source
-        if b.source.stale and not source.stale:
+        if b and (b.source.stale or b.source.provider != source.provider) and not source.stale:
             source = source.model_copy(update={"stale": True})
         return TripsResponse(
             origin=origin,

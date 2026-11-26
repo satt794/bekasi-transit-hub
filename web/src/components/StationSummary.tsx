@@ -42,9 +42,9 @@ export function StationSummary({ station, summary, loading, now }: Props) {
         <div className={styles.heroLeft}>
           <div className={styles.heroBadgeRow}>
             <span className={styles.heroBadge}>Stasiun Aktif</span>
-            <span className={styles.regionTag}>{station.region || "Wilayah Bekasi"}</span>
+            <span className={styles.regionTag}>{station.region || "Jabodetabek"}</span>
             <span className={styles.liveTag}>
-              <span className={styles.pulseDot} /> Real-Time
+              <span className={styles.pulseDot} /> Data jadwal
             </span>
           </div>
 
@@ -53,9 +53,9 @@ export function StationSummary({ station, summary, loading, now }: Props) {
             <span className={`${styles.stationCode} mono`}>({station.id})</span>
           </h2>
           <p className={styles.heroDesc}>
-            Lintasan utama Commuter Line Cikarang — Penghubung komuter Bekasi & Jabodetabek
+            Informasi jadwal Commuter Line di stasiun terpilih.
           </p>
-          {station.platform_guide && (
+          {false && station.platform_guide && (
             <div className={styles.platformGuideBox}>
               <span className={styles.platformGuideIcon}>🚊</span>
               <div className={styles.platformGuideText}>
@@ -93,7 +93,7 @@ export function StationSummary({ station, summary, loading, now }: Props) {
             <span className="mono">{summary.total_trips}</span>
             <span className={styles.cardUnit}>perjalanan</span>
           </div>
-          <span className={styles.cardDesc}>Arah Jakarta & Cikarang</span>
+          <span className={styles.cardDesc}>Seluruh jadwal yang tersedia</span>
         </div>
 
         <div className={styles.card}>
