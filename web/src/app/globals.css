@@ -406,3 +406,42 @@ a {
 .tk-modes .tk-mode-brand .tk-mode-fallback[hidden]{display:none!important;}
 @media(max-width:480px){.tk-modes{gap:6px}.tk-modes .tk-mode-brand>span{width:100%;max-width:86px;height:62px;min-height:62px;padding:7px;border-radius:15px}.tk-modes .tk-mode-brand>span>img{max-width:100%;max-height:32px}.tk-modes .tk-mode-brand[data-mode="Bus"]>span>img,.tk-modes .tk-mode-brand[data-mode="LRT"]>span>img{max-height:26px}.tk-modes .tk-mode-brand[data-mode="MRT"]>span>img{max-height:30px}}
 @media(prefers-reduced-motion:reduce){.tk-modes .tk-mode-brand>span{transform:none!important;transition:none!important}}
+
+/* Friendly transit interface: compact operator chips, stable desktop columns. */
+.tk-headerinner{max-width:1280px}
+.tk-brand{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:18px}
+.tk-brand>strong{white-space:nowrap}
+.tk-brand .tk-nav{position:static;transform:none;inset:auto;width:auto;flex:1;min-width:0;display:flex;justify-content:center;gap:6px;border:0;padding:0;border-radius:0;box-shadow:none;backdrop-filter:none;background:transparent}
+.tk-brand .tk-nav button{display:flex;align-items:center;justify-content:center;gap:7px;color:#e5faf7;min-height:44px;padding:8px 14px;border-radius:12px;white-space:nowrap}
+.tk-brand .tk-nav button svg{width:18px;height:18px}
+.tk-brand .tk-nav button[aria-current=page],.tk-brand .tk-nav button:hover{background:#ffffff20;color:#fff}
+.tk-theme{flex-shrink:0}
+.tk-clock-status{font-size:11px;font-weight:600;margin-top:4px;color:#d1fae5}
+.tk-main{max-width:1280px;padding-bottom:32px}
+.tk-main[data-view="Beranda"]{display:block}
+.tk-home-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;align-items:start}
+.tk-home-left,.tk-home-right{display:grid;min-width:0;gap:18px;align-content:start}
+.tk-home-layout .tk-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tk-home-layout .tk-mode-section{border-radius:20px;padding:16px;background:var(--tk-card);border:1px solid var(--tk-border)}
+.tk-home-layout .tk-mode-section .tk-modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.tk-home-layout .tk-modes .tk-mode-brand{display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;padding:8px 12px;min-height:52px;background:var(--tk-card);border:1px solid var(--tk-border);border-radius:12px;text-align:left;transition:background .18s,border-color .18s,transform .18s}
+.tk-home-layout .tk-modes .tk-mode-brand>span{flex:0 0 54px;min-width:0;width:54px;max-width:54px;height:34px;min-height:0;padding:3px;border:0;border-radius:6px;box-shadow:none;background:#fff;transform:none;overflow:hidden}
+.tk-home-layout .tk-modes .tk-mode-brand>span>img{width:100%;height:100%;max-width:48px;max-height:28px;object-fit:contain}
+.tk-home-layout .tk-modes .tk-mode-brand[data-mode="Bus"]>span>img{max-width:26px;max-height:26px}
+.tk-home-layout .tk-modes .tk-mode-brand[data-mode="MRT"]>span>img{max-width:40px;max-height:26px}
+.tk-home-layout .tk-modes .tk-mode-brand strong{font-size:13px;line-height:1.2;white-space:nowrap}
+.tk-home-layout .tk-modes .tk-mode-fallback{width:auto;height:auto;font-size:12px;font-weight:800;letter-spacing:-.02em}
+.tk-home-layout .tk-modes .tk-mode-brand:hover{background:var(--tk-soft);border-color:#0d9488}
+.tk-home-layout .tk-modes .tk-mode-brand:active{transform:scale(.98)}
+.tk-locate-link{display:flex;align-items:center;gap:7px;text-align:left;font-weight:600;color:#0f766e;min-height:44px}
+[data-theme=dark] .tk-locate-link{color:#5eead4}
+.tk-locate-link svg{width:18px;height:18px}
+.tk-home-left>* , .tk-home-right>*{animation:tk-rise .3s ease-out both}
+.tk-home-right .tk-mapempty{min-height:230px}
+.tk-nearby-more{display:block;min-height:44px;margin:12px;font-weight:600;color:var(--tk-text)}
+.tk-home-layout .tk-mapcard>p[role=status]:empty{display:none}
+.tk-home-layout .tk-mapcard .tk-place{margin:0 12px;padding:12px 0}
+@media(min-width:900px){.tk-home-layout{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:24px}.tk-home-right .tk-mapempty{min-height:300px}}
+@media(max-width:720px){.tk-brand{gap:8px}.tk-brand .tk-nav{order:3;flex-basis:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}.tk-brand .tk-nav button{padding:8px 4px;font-size:12px;gap:4px}.tk-brand .tk-nav button svg{width:16px;height:16px}.tk-headerinner{padding-bottom:20px}}
+@media(max-width:360px){.tk-brand .tk-nav button svg{display:none}.tk-home-layout .tk-modes .tk-mode-brand{padding:8px;gap:6px}}
+@media(prefers-reduced-motion:reduce){.tk-home-left>*,.tk-home-right>*,.tk-home-layout .tk-modes .tk-mode-brand{animation:none!important;transition:none!important;transform:none!important}}
