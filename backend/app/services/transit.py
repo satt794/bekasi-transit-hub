@@ -505,7 +505,17 @@ class TransitService:
                     continue
                 # Terminus stations may omit departure records for arriving trains.
                 # The origin schedule carries the published final arrival time.
-                if terminal(raw, False) == destination.id and raw.arrives is not None:
+                # Do not use a missing-record fallback when records with the
+                # same train number explicitly contradict the service identity.
+                matching_number = at_destination.get(raw.train_id, [])
+                identity_conflict = bool(matching_number) and not any(
+                    matches(raw, other) for other in matching_number
+                )
+                if (
+                    terminal(raw, False) == destination.id
+                    and raw.arrives is not None
+                    and not identity_conflict
+                ):
                     final_arrival = service_datetime(day, raw.arrives)
                     if timedelta(0) < final_arrival - departs_at <= timedelta(hours=4):
                         candidates.append(final_arrival)
