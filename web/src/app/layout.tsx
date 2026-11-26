@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, IBM_Plex_Mono } from "next/font/google";
 import { THEME_SCRIPT } from "@/lib/theme";
 import "./globals.css";
+import { OfflineSupport } from "@/components/OfflineSupport";
 
 const archivo = Plus_Jakarta_Sans({
   variable: "--font-archivo",
@@ -38,7 +39,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
-      <body>{children}</body>
+      <body><OfflineSupport/>{children}</body>
     </html>
   );
 }
