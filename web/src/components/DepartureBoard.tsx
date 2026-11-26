@@ -33,6 +33,7 @@ const COLUMNS: { dir: Direction; title: string; hint: string; icon: string }[] =
 export function DepartureBoard(props: Props) {
   const { data, loading, error, now, expanded, onToggleExpanded, onSelectTrain, onRetry } = props;
   const stationId = data?.station.id;
+  const corridor = ["CKR","TLM","CIT","TB","BKST","BKS","KRI","CUK","KLDB","BUA","KLD","JNG"].includes(stationId??"");
 
   return (
     <section className={styles.board} aria-labelledby="board-title">
@@ -40,7 +41,7 @@ export function DepartureBoard(props: Props) {
         <div className={styles.headLeft}>
           <div className={styles.headBadge}>
             <span className={styles.radarPing} />
-            Papan Jadwal Real-Time
+            Papan jadwal keberangkatan
           </div>
           <h2 id="board-title" className={styles.title}>
             Keberangkatan Berikutnya
@@ -63,8 +64,8 @@ export function DepartureBoard(props: Props) {
         <BoardError error={error} onRetry={onRetry} />
       ) : (
         <div className={styles.columns}>
-          {COLUMNS.map((col) => {
-            const items = data?.departures[col.dir] ?? [];
+          {(corridor?COLUMNS:[{dir:"jakarta" as Direction,title:"Semua tujuan",hint:"Periksa tujuan akhir kereta",icon:"🚆"}]).map((col) => {
+            const items = corridor?(data?.departures[col.dir]??[]):[...(data?.departures.jakarta??[]),...(data?.departures.cikarang??[])].sort((a,b)=>a.departs_at.localeCompare(b.departs_at));
             const terminus = stationId === "CKR" && col.dir === "cikarang";
 
             return (
@@ -88,7 +89,7 @@ export function DepartureBoard(props: Props) {
                   <p className={styles.empty}>
                     {terminus
                       ? "Cikarang adalah stasiun terminus — tidak ada keberangkatan ke arah timur."
-                      : "Tidak ada keberangkatan dalam jadwal tersisa hari ini."}
+                      : "Tidak ada data keberangkatan yang tersedia."}
                   </p>
                 ) : (
                   <ol className={styles.rows}>
@@ -213,8 +214,7 @@ function BoardError({ error, onRetry }: { error: Error; onRetry: () => void }) {
       <p className={styles.errorTitle}>Jadwal belum bisa dimuat</p>
       <p className={styles.errorText}>{error.message}</p>
       <p className={styles.errorHint}>
-        Pastikan backend aktif di port 8000:
-        <code className="mono"> uv run uvicorn app.main:app --port 8000</code>
+        Penyedia jadwal mungkin sedang tidak tersedia.
       </p>
       <button id="retry-departures" type="button" className={styles.retry} onClick={onRetry}>
         Coba lagi
