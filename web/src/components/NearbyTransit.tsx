@@ -18,12 +18,15 @@ export function NearbyTransit({compact=false,onOpen}:{compact?:boolean;onOpen?:(
  const [lat,setLat]=useState("");const [lon,setLon]=useState("");
  async function search(pos:Location){
   setLocation(pos);setBusy(true);setStatus("");setPoints([]);setSelected(null);
-  const around="(around:500,"+pos.lat+","+pos.lon+")";
-  const query="[out:json][timeout:20];(nwr"+around+'["railway"~"^(station|halt|tram_stop|subway_entrance)$"];nwr'+around+'["highway"="bus_stop"];nwr'+around+'["public_transport"~"^(platform|station)$"];nwr'+around+'["amenity"~"^(bus_station|taxi)$"];nwr'+around+'["shop"~"^(convenience|supermarket|mall)$"];);out center;';
+  setFilter("Semua");
+  setStatus("Lokasi diperoleh. Mencari transportasi sekitar…");
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),32000);
   try{
-   const res=await fetch("https://overpass-api.de/api/interpreter",{method:"POST",body:new URLSearchParams({data:query}),signal:AbortSignal.timeout(25000)});
+   const res=await fetch("/api/nearby",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({lat:pos.lat,lon:pos.lon}),signal:controller.signal,cache:"no-store"});
    if(!res.ok)throw Error("provider");
    const data=await res.json() as {elements:Element[]};
+   if(!Array.isArray(data.elements))throw Error("invalid response");
    const found:Point[]=[];const seen=new Set<string>();
    for(const el of data.elements){
     const p=el.center??{lat:el.lat,lon:el.lon};const t=el.tags??{};
@@ -36,12 +39,18 @@ export function NearbyTransit({compact=false,onOpen}:{compact?:boolean;onOpen?:(
    }
    setPoints(found.sort((a,b)=>a.distance-b.distance));
    setStatus(found.length?"":"Tidak ditemukan transportasi atau patokan dalam radius 500 meter.");
-  }catch{setStatus("Data peta belum tersedia. Coba lagi nanti.");}finally{setBusy(false);}
+  }catch{setStatus("Lokasi berhasil ditemukan, tetapi data halte/stasiun belum tersedia. Tekan Coba lagi untuk memuat ulang.");}finally{clearTimeout(timer);setBusy(false);}
  }
  function locate(){
-  if(!navigator.geolocation){setStatus("GPS tidak tersedia. Masukkan koordinat manual.");return;}
+  if(!window.isSecureContext||!navigator.geolocation){setStatus("GPS membutuhkan browser yang mendukung lokasi melalui HTTPS. Gunakan lokasi manual.");setManual(true);return;}
   setBusy(true);setStatus("Meminta izin lokasi…");
-  navigator.geolocation.getCurrentPosition(p=>void search({lat:p.coords.latitude,lon:p.coords.longitude,accuracy:p.coords.accuracy}),()=>{setBusy(false);setStatus("Lokasi tidak tersedia atau izin ditolak. Gunakan koordinat manual.");},{enableHighAccuracy:true,timeout:15000,maximumAge:30000});
+  const success=(p:GeolocationPosition)=>{void search({lat:p.coords.latitude,lon:p.coords.longitude,accuracy:p.coords.accuracy});};
+  const failure=(e:GeolocationPositionError)=>{
+   if(e.code===1){setBusy(false);setManual(true);setStatus("Izin lokasi ditolak. Buka pengaturan situs/browser dan izinkan Lokasi, atau gunakan koordinat manual.");return;}
+   setStatus("GPS presisi belum tersedia. Mencoba lokasi perkiraan…");
+   navigator.geolocation.getCurrentPosition(success,err=>{setBusy(false);setManual(true);setStatus(err.code===1?"Izin lokasi ditolak. Gunakan lokasi manual.":"Perangkat tidak dapat menentukan lokasi. Aktifkan layanan lokasi atau gunakan koordinat manual.");},{enableHighAccuracy:false,timeout:12000,maximumAge:120000});
+  };
+  navigator.geolocation.getCurrentPosition(success,failure,{enableHighAccuracy:true,timeout:10000,maximumAge:30000});
  }
  const visible=points.filter(p=>filter==="Semua"||p.kind===filter);
  const zoom=16;
@@ -73,10 +82,11 @@ export function NearbyTransit({compact=false,onOpen}:{compact?:boolean;onOpen?:(
    </div>:<div className="tk-mapempty"><span aria-hidden="true">◎</span><strong>Temukan transportasi di sekitar Anda</strong><small>{location?"Lokasi di luar jangkauan tampilan peta.":"Aktifkan lokasi untuk melihat peta 500 meter."}</small></div>}
 
    <div className="tk-mapactions"><button className="tk-primary" disabled={busy} onClick={compact&&onOpen?onOpen:locate}>{compact?"Jelajahi sekitar saya":"Gunakan lokasi saya"}</button>{!compact&&<button onClick={()=>setManual(v=>!v)}>Lokasi manual</button>}</div>
-   {!compact&&<><p className="tk-muted">Koordinat dikirim ke OpenStreetMap dan Overpass untuk mencari lokasi. Jarak dihitung garis lurus, bukan jarak jalan kaki.</p>
+   {!compact&&<><p className="tk-muted">Koordinat dikirim ke server TransitKita dan penyedia OpenStreetMap/Overpass hanya saat pencarian. Jarak dihitung garis lurus, bukan jarak jalan kaki.</p>
    {manual&&<form className="tk-manual" onSubmit={e=>{e.preventDefault();const a=Number(lat),b=Number(lon);if(lat&&lon&&Number.isFinite(a)&&Number.isFinite(b)&&Math.abs(a)<=85&&Math.abs(b)<=180)void search({lat:a,lon:b,accuracy:0});else setStatus("Koordinat tidak valid.");}}><label>Lintang<input required type="number" step="any" value={lat} onChange={e=>setLat(e.target.value)}/></label><label>Bujur<input required type="number" step="any" value={lon} onChange={e=>setLon(e.target.value)}/></label><button disabled={busy} className="tk-primary">Cari sekitar</button></form>}
    {location&&<p className="tk-muted">{location.accuracy?"Akurasi GPS ±"+Math.round(location.accuracy)+" m":"Lokasi manual"} · Radius pencarian 500 m</p>}
-   <p role="status">{busy?"Memuat lokasi…":status}</p>
+   <p role="status" aria-live="polite">{status}</p>
+   {location&&!busy&&<button className="tk-primary" style={{width:"calc(100% - 24px)",margin:"12px"}} onClick={()=>void search(location)}>Coba lagi / Muat ulang data sekitar</button>}{location&&location.accuracy>500&&<p className="tk-muted">Akurasi lokasi rendah; hasil radius 500 m mungkin tidak sesuai posisi Anda.</p>}
    <div className="tk-filters">{["Semua","Stasiun","Halte","Patokan"].map(f=><button key={f} aria-pressed={filter===f} onClick={()=>setFilter(f)}>{f}</button>)}</div>
    {visible.map(p=><article className="tk-place" key={p.id}><button onClick={()=>setSelected(p)}><strong>{p.name}</strong><small>{p.kind} · {Math.round(p.distance)} m</small></button>{p.kind==="Patokan"&&<small>Patokan alternatif — pastikan kendaraan dapat berhenti di sini.</small>}<div><a target="_blank" rel="noreferrer" href={"https://www.google.com/maps/search/?api=1&query="+p.lat+","+p.lon}>Buka Maps</a><button onClick={async()=>{try{await navigator.clipboard.writeText(p.name+" "+p.lat+","+p.lon);setStatus("Lokasi disalin.");}catch{setStatus("Tidak dapat menyalin lokasi.");}}}>Salin lokasi</button></div></article>)}</>}
   </div>
