@@ -393,3 +393,16 @@ a {
 @media(max-width:420px){.tk-quick-grid button{padding:12px 10px;gap:8px;align-items:flex-start}.tk-quick-icon{width:34px;height:34px;border-radius:11px}.tk-quick-icon svg{width:19px;height:19px}.tk-quick-chevron{display:none}.tk-quick-grid strong{font-size:13px}}
 @media(hover:hover){.tk-quick-grid button:hover{transform:translateY(-3px);border-color:#0d948860;box-shadow:0 8px 24px #0f766e14}.tk-quick-grid button:hover .tk-quick-icon{transform:rotate(-5deg) scale(1.07)}}
 @media(prefers-reduced-motion:reduce){.tk-quick-grid button,.tk-quick-icon{transition:none!important;transform:none!important}}
+
+/* Transport marks: bounded rectangular artwork, consistent optical alignment. */
+.tk-modes{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}
+.tk-modes .tk-mode-brand{min-width:0;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:9px;overflow:hidden;}
+.tk-modes .tk-mode-brand>span{position:relative;box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:min(100%,116px);max-width:116px;height:76px;min-height:76px;padding:10px;overflow:hidden;isolation:isolate;background:#fff;border:1px solid #e2e8f0;border-radius:18px;}
+.tk-modes .tk-mode-brand>span>img{display:block;width:100%;height:100%;min-width:0;min-height:0;max-width:92px;max-height:42px;object-fit:contain;object-position:center;}
+.tk-modes .tk-mode-brand[data-mode="Bus"]>span>img{max-height:32px;}
+.tk-modes .tk-mode-brand[data-mode="MRT"]>span>img{max-height:38px;}
+.tk-modes .tk-mode-brand[data-mode="LRT"]>span>img{max-height:36px;}
+.tk-modes .tk-mode-brand .tk-mode-fallback{width:32px;height:32px;background:transparent;display:grid;place-items:center;}
+.tk-modes .tk-mode-brand .tk-mode-fallback[hidden]{display:none!important;}
+@media(max-width:480px){.tk-modes{gap:6px}.tk-modes .tk-mode-brand>span{width:100%;max-width:86px;height:62px;min-height:62px;padding:7px;border-radius:15px}.tk-modes .tk-mode-brand>span>img{max-width:100%;max-height:32px}.tk-modes .tk-mode-brand[data-mode="Bus"]>span>img,.tk-modes .tk-mode-brand[data-mode="LRT"]>span>img{max-height:26px}.tk-modes .tk-mode-brand[data-mode="MRT"]>span>img{max-height:30px}}
+@media(prefers-reduced-motion:reduce){.tk-modes .tk-mode-brand>span{transform:none!important;transition:none!important}}
