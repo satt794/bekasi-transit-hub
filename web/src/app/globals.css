@@ -346,3 +346,44 @@ a {
 .tk-mode-brand:active>span{transform:scale(.96);}
 .tk-mode-brand [hidden]{display:none!important;}
 @media(prefers-reduced-motion:reduce){.tk-modes .tk-mode-brand>span{transition:none;transform:none;}}
+
+/* TransitKita motion and layout refresh: lightweight, no new runtime dependencies. */
+.tk-shell{background:radial-gradient(ellipse at 10% 0%,#0d94880c,transparent 45%),var(--tk-bg);}
+.tk-header{position:relative;overflow:hidden;background:linear-gradient(120deg,#115e59,#0f766e 52%,#0d9488);}
+.tk-header:before,.tk-header:after{content:"";position:absolute;border:1px solid #ffffff19;border-radius:50%;pointer-events:none;width:360px;height:360px;right:-100px;top:-190px;}
+.tk-header:after{width:480px;height:480px;right:-160px;top:-250px;}
+.tk-headerinner{position:relative;z-index:1;}
+.tk-header h1{animation:tk-rise .35s ease-out;}
+.tk-main>.tk-card,.tk-main>.tk-nearby,.tk-main>.tk-guide,.tk-main>section{animation:tk-rise .38s cubic-bezier(.2,.8,.2,1) both;}
+.tk-main> :nth-child(2){animation-delay:45ms}.tk-main> :nth-child(3){animation-delay:85ms}
+@keyframes tk-rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+.tk-card{border-radius:20px;padding:20px;box-shadow:0 5px 18px #0f172a08;transition:border-color .2s,box-shadow .2s;}
+.tk-card h2{font-size:18px;letter-spacing:-.025em;margin-bottom:10px;}
+.tk-card h3{font-size:15px;letter-spacing:-.015em;}
+.tk-card label{display:block;margin-block:8px;}
+.tk-shell input:not([type=checkbox]),.tk-shell select{border-radius:12px;transition:box-shadow .2s,border-color .2s;}
+.tk-shell input:focus,.tk-shell select:focus{outline:none;border-color:#0d9488;box-shadow:0 0 0 3px #0d948825;}
+.tk-primary{border-radius:13px;background:linear-gradient(115deg,#0f766e,#0d9488);box-shadow:0 4px 12px #0f766e24;transition:transform .18s,box-shadow .18s;}
+.tk-primary:not(:disabled):active{transform:scale(.985);}
+.tk-guide{position:relative;overflow:hidden;border:1px solid var(--tk-border);border-radius:18px;padding:20px;transition:transform .2s,box-shadow .2s;}
+.tk-guide::after{content:"›";margin-left:auto;align-self:center;font-size:25px;color:#0d9488;}
+.tk-guide>span{flex:1;min-width:0}.tk-guide strong{font-size:15px;}
+.tk-place{padding:14px 0;line-height:1.55;}
+.tk-nav{box-shadow:0 -8px 28px #0f172a12;backdrop-filter:blur(18px);}
+.tk-nav button{position:relative;border-radius:13px;transition:color .2s,background .2s;}
+.tk-nav button[aria-current=page]{background:var(--tk-soft);}
+.tk-nav button[aria-current=page]>svg{animation:tk-nav-pop .32s cubic-bezier(.2,.8,.2,1);}
+@keyframes tk-nav-pop{0%{transform:scale(.85)}60%{transform:scale(1.13)}100%{transform:scale(1)}}
+.tk-balance-hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#134e4a,#0f766e 60%,#0d9488);color:white;border-radius:20px;padding:24px;margin:16px 0;box-shadow:0 12px 28px #0f766e25;}
+.tk-balance-hero:after{content:"";position:absolute;border:1px solid #ffffff33;border-radius:50%;width:180px;height:180px;right:-60px;top:-70px;pointer-events:none;}
+.tk-balance-hero h2{font-variant-numeric:tabular-nums;}
+.tk-balance-calc{display:grid;gap:8px;padding:16px;border:1px solid var(--tk-border);border-radius:16px;margin:16px 0;background:var(--tk-bg);}
+.tk-shell .tk-check{display:flex;align-items:center;gap:10px;}
+.tk-shell .tk-check input{width:18px;min-height:18px;margin:0;accent-color:#0d9488;}
+.tk-balance-result{padding:16px;border-radius:14px;background:var(--tk-soft);display:grid;gap:4px;animation:tk-rise .24s ease-out;}
+.tk-balance-result strong{font-size:28px;font-variant-numeric:tabular-nums;letter-spacing:-.04em;}
+.tk-balance-result p{font-size:12px;color:var(--tk-muted);}
+@media(hover:hover){.tk-primary:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 7px 18px #0f766e30}.tk-guide:hover{transform:translateY(-3px);box-shadow:0 8px 20px #0f172a10}.tk-card:hover{border-color:#0d948840}.tk-nav button:hover{background:var(--tk-soft)}}
+@media(min-width:800px){.tk-main[data-view="Saldo"],.tk-main[data-view="Antarmoda"],.tk-main[data-view="MRT"],.tk-main[data-view="LRT"]{grid-template-columns:minmax(0,760px);justify-content:center}.tk-main[data-view="Tarif"]{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr)}.tk-main[data-view="Tarif"]>.tk-guide{min-height:112px;align-items:center}.tk-nav{bottom:14px;border-radius:20px;padding:8px;}}
+@media(max-width:480px){.tk-card{padding:16px}.tk-mapcard{padding:0}.tk-headerinner{padding-bottom:24px}.tk-modes .tk-mode-brand>span{height:64px;padding:9px}.tk-balance-hero{padding:20px;}}
+@media(prefers-reduced-motion:reduce){.tk-shell *,.tk-shell *::before,.tk-shell *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
