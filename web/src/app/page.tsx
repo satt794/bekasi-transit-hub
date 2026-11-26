@@ -24,6 +24,7 @@ import type { ReactNode } from "react";
 type Tab="Beranda"|"Rute"|"Sekitar"|"Panduan"|"KRL"|"Bus"|"MRT"|"LRT"|"Tarif"|"Antarmoda"|"Saldo";
 function Icon({name}:{name:string}){
  const paths:Record<string,ReactNode>={
+ wallet:<><rect x="3" y="5" width="18" height="15" rx="3"/><path d="M3 8V6a3 3 0 0 1 3-3h11M21 11h-6a2.5 2.5 0 0 0 0 5h6M16 13.5h.01"/></>,
  train:<><rect x="5" y="3" width="14" height="16" rx="4"/><path d="M5 11h14M9 19l-3 3m9-3 3 3M9 15h.01M15 15h.01"/></>,
  bus:<><rect x="4" y="3" width="16" height="16" rx="3"/><path d="M4 11h16M7 19v3m10-3v3M8 15h.01M16 15h.01"/></>,
  home:<><path d="m3 10 9-7 9 7v11H3zM9 21v-8h6v8"/></>,
@@ -83,7 +84,7 @@ export default function DashboardPage(){
  {tab==="Tarif"&&<FareGuide/>}
  {tab==="Saldo"&&<CardBalance/>}
  {(tab==="Beranda"||tab==="KRL"||tab==="Rute")&&<CrowdGuide now={now}/>}
- {(tab==="Beranda"||tab==="Tarif"||tab==="Rute")&&<button className="tk-guide" onClick={()=>go("Saldo")}><Icon name="dot"/><span><strong>Smart Balance Tracker</strong><small>Catat saldo dan biaya perjalanan tanpa NFC.</small></span></button>}
+ {(tab==="Beranda"||tab==="Tarif"||tab==="Rute")&&<button className="tk-guide" onClick={()=>go("Saldo")}><Icon name="wallet"/><span><strong>Smart Balance Tracker</strong><small>Catat saldo awal, pengeluaran dan top up.</small></span></button>}
  {tab==="Antarmoda"&&<MultimodalPlanner/>}
  {(tab==="Beranda"||tab==="Rute"||tab==="MRT"||tab==="LRT")&&<button className="tk-guide" onClick={()=>go("Antarmoda")}><Icon name="route"/><span><strong>Rute antarmoda KRL, MRT &amp; LRT</strong><small>Cari perjalanan lintas jaringan kereta.</small></span></button>}
  {tab==="MRT"&&<><FareGuide mode="MRT Jakarta"/><section className="tk-card"><h2>Informasi perjalanan MRT</h2><p>Jadwal dan rute resmi tersedia melalui operator. Jadwal otomatis MRT belum terintegrasi.</p><a href="https://jakartamrt.co.id/" target="_blank" rel="noreferrer">Buka situs MRT Jakarta</a></section><button className="tk-primary" onClick={()=>go("Sekitar")}>Cari stasiun sekitar</button></>}
