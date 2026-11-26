@@ -41,7 +41,8 @@ const wibDate=new Intl.DateTimeFormat("id-ID",{timeZone:"Asia/Jakarta",weekday:"
 const guides=["Pilih stasiun asal dan tujuan pada menu Rute.","Periksa tujuan akhir kereta dan informasi keberangkatan. Siapkan metode pembayaran yang diterima operator.","Ikuti papan petunjuk dan konfirmasi peron kepada petugas. Jangan mengandalkan perkiraan peron.","Jika perlu berganti kereta, ikuti petunjuk transit dan periksa arah kereta berikutnya.","Setelah tiba, gunakan menu Sekitar untuk mencari halte atau patokan penjemputan."];
 export default function DashboardPage(){
  const [tab,setTab]=useState<Tab>("Beranda");
- const [origin,setOrigin]=useState("");const [destination,setDestination]=useState("");
+ const [selection,setSelection]=useState({origin:"",destination:""});const {origin,destination}=selection;
+ const setOrigin=(origin:string)=>setSelection(prev=>({...prev,origin}));const setDestination=(destination:string)=>setSelection(prev=>({...prev,destination}));
  const [originFilter,setOriginFilter]=useState("");const [destinationFilter,setDestinationFilter]=useState("");
  const [query,setQuery]=useState<{from:string;to:string}|null>(null);
  const [stationId,setStationId]=useState("BKS");
@@ -50,7 +51,7 @@ export default function DashboardPage(){
  const [bus,setBus]=useState<TransjakartaRoute|null>(null);
  const [step,setStep]=useState(0);
  const [notice,setNotice]=useState("");
- useEffect(()=>{const p=new URLSearchParams(window.location.search);const from=p.get("from")||"",to=p.get("to")||"";if(Object.prototype.hasOwnProperty.call(stationNames,from)&&Object.prototype.hasOwnProperty.call(stationNames,to)&&from!==to){setOrigin(from);setDestination(to);setQuery({from,to});setTab("Rute");}},[]);
+ useEffect(()=>{const p=new URLSearchParams(window.location.search);const from=p.get("from")||"",to=p.get("to")||"";if(Object.prototype.hasOwnProperty.call(stationNames,from)&&Object.prototype.hasOwnProperty.call(stationNames,to)&&from!==to){setSelection({origin:from,destination:to});setQuery({from,to});setTab("Rute");}},[]);
  const now=useNow();
  const wp=now===null?[]:new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Jakarta",weekday:"short",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(now);const part=(k:string)=>wp.find(p=>p.type===k)?.value;const minute=Number(part("hour"))*60+Number(part("minute"));const weekday=!!part("weekday")&&!["Sat","Sun"].includes(part("weekday")!);const crowdLabel=now===null?"Memuat waktu":!weekday?"Akhir pekan":minute>=330&&minute<450?"Jam sibuk acuan (pagi)":minute>=960&&minute<1080?"Jam sibuk acuan (sore)":"Di luar jam sibuk acuan";
  const stations=useApi<StationsResponse>(endpoints.stations());
@@ -60,14 +61,14 @@ export default function DashboardPage(){
  const suggested=query?suggestRoute(query.from,query.to):null;
  const station=schedule.data?.station||all.find(s=>s.id===stationId)||BEKASI_STATIONS[1];
  function go(t:Tab){setTab(t);setNotice("");window.scrollTo({top:0,behavior:"instant"});}
- function openJourney(from:string,to:string){if(!from||!to||from===to)return;setOrigin(from);setDestination(to);setOriginFilter("");setDestinationFilter("");setQuery({from,to});const url=new URL(window.location.href);url.searchParams.set("from",from);url.searchParams.set("to",to);window.history.replaceState(null,"",url);rememberJourney({from,to});go("Rute");}
+ function openJourney(from:string,to:string){if(!from||!to||from===to)return;setSelection({origin:from,destination:to});setOriginFilter("");setDestinationFilter("");setQuery({from,to});const url=new URL(window.location.href);url.searchParams.set("from",from);url.searchParams.set("to",to);window.history.replaceState(null,"",url);rememberJourney({from,to});go("Rute");}
  function search(){if(!origin||!destination||origin===destination){setNotice("Pilih dua stasiun yang berbeda.");return;}openJourney(origin,destination);}
  const matchStation=(s:{id:string;name:string},filter:string,selected:string)=>s.id===selected||(s.name+" "+s.id).toLocaleLowerCase("id").includes(filter.trim().toLocaleLowerCase("id"));
  const planner=<form className="tk-card tk-planner" onSubmit={e=>{e.preventDefault();search();}}>
  <h2><Icon name="route"/> Rencanakan perjalanan</h2><p className="tk-muted">Cari nama stasiun KRL, lalu pilih dari daftar. Untuk MRT dan LRT gunakan Rute antarmoda.</p><button type="button" className="tk-locate-link" onClick={()=>go("Sekitar")}><Icon name="map"/> Cari stasiun dari lokasi saya</button>
  <input aria-label="Cari stasiun asal" placeholder="Berangkat dari? (nama stasiun)" value={originFilter} onChange={e=>setOriginFilter(e.target.value)} style={{width:"100%",padding:10,border:"1px solid var(--border, #cbd5e1)",borderRadius:10,background:"transparent",color:"inherit"}}/>
  <label className="tk-field"><span className="tk-origin"><Icon name="dot"/></span><span>Berangkat dari<select required value={origin} onChange={e=>setOrigin(e.target.value)}><option value="">Pilih stasiun awal</option>{all.filter(s=>matchStation(s,originFilter,origin)).map(s=><option value={s.id} key={s.id}>{s.name} ({s.id})</option>)}</select></span></label>
- <button type="button" className="tk-swap" aria-label="Tukar asal dan tujuan" onClick={()=>{setOrigin(destination);setDestination(origin);setOriginFilter("");setDestinationFilter("");}}><Icon name="swap"/></button>
+ <button type="button" className="tk-swap" aria-label="Tukar asal dan tujuan" onClick={()=>{setSelection(prev=>({origin:prev.destination,destination:prev.origin}));setOriginFilter("");setDestinationFilter("");}}><Icon name="swap"/></button>
  <input aria-label="Cari stasiun tujuan" placeholder="Mau ke mana? (nama stasiun)" value={destinationFilter} onChange={e=>setDestinationFilter(e.target.value)} style={{width:"100%",padding:10,border:"1px solid var(--border, #cbd5e1)",borderRadius:10,background:"transparent",color:"inherit"}}/>
  <label className="tk-field"><span className="tk-dest"><Icon name="map"/></span><span>Tujuan perjalanan<select required value={destination} onChange={e=>setDestination(e.target.value)}><option value="">Pilih stasiun tujuan</option>{all.filter(s=>matchStation(s,destinationFilter,destination)).map(s=><option value={s.id} key={s.id}>{s.name} ({s.id})</option>)}</select></span></label>
  {stations.error&&<p className="tk-muted">API stasiun belum tersedia. Menampilkan direktori jaringan lokal; jadwal mungkin tidak tersedia.</p>}
