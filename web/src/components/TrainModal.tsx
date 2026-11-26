@@ -60,11 +60,11 @@ export function TrainModal({ train, now, onClose }: Props) {
         {/* Status bar */}
         <div className={styles.statusBar}>
           <span className={styles.statusLabel}>
-            {data?.partial ? "Rute (data stasiun koridor)" : "Pemberhentian lengkap perjalanan"}
+            {data?.partial ? "Rute (data stasiun koridor)" : "Pemberhentian menurut jadwal"}
           </span>
           {data?.source && now && (
             <span className={styles.sourceTime}>
-              Sumber: {data.source.provider} ({relativeAgo(data.source.fetched_at, now)})
+              Jadwal, bukan GPS · Sumber: {data.source.provider} ({relativeAgo(data.source.fetched_at, now)})
             </span>
           )}
         </div>
@@ -114,7 +114,7 @@ export function TrainModal({ train, now, onClose }: Props) {
                       <div className={styles.stationNameRow}>
                         <span className={styles.stopName}>{stop.station_name}</span>
                         {stop.is_bekasi && <span className={styles.bekasiTag}>Bekasi</span>}
-                        {isNext && <span className={styles.nextTag}>Stasiun Terdekat</span>}
+                        {isNext && <span className={styles.nextTag}>Berikutnya menurut jadwal</span>}
                       </div>
                       <span className={`${styles.stationCode} mono`}>{stop.station_id}</span>
                     </div>
