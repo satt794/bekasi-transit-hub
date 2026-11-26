@@ -41,6 +41,8 @@ const wibDate=new Intl.DateTimeFormat("id-ID",{timeZone:"Asia/Jakarta",weekday:"
 const guides=["Pilih stasiun asal dan tujuan pada menu Rute.","Periksa tujuan akhir kereta dan informasi keberangkatan. Siapkan metode pembayaran yang diterima operator.","Ikuti papan petunjuk dan konfirmasi peron kepada petugas. Jangan mengandalkan perkiraan peron.","Jika perlu berganti kereta, ikuti petunjuk transit dan periksa arah kereta berikutnya.","Setelah tiba, gunakan menu Sekitar untuk mencari halte atau patokan penjemputan."];
 export default function DashboardPage(){
  const [tab,setTab]=useState<Tab>("Beranda");
+ const [hydrated,setHydrated]=useState(false);
+ useEffect(()=>setHydrated(true),[]);
  const [selection,setSelection]=useState({origin:"",destination:""});const {origin,destination}=selection;
  const setOrigin=(origin:string)=>setSelection(prev=>({...prev,origin}));const setDestination=(destination:string)=>setSelection(prev=>({...prev,destination}));
  const [originFilter,setOriginFilter]=useState("");const [destinationFilter,setDestinationFilter]=useState("");
@@ -67,12 +69,12 @@ export default function DashboardPage(){
  const planner=<form className="tk-card tk-planner" onSubmit={e=>{e.preventDefault();search();}}>
  <h2><Icon name="route"/> Rencanakan perjalanan</h2><p className="tk-muted">Cari nama stasiun KRL, lalu pilih dari daftar. Untuk MRT dan LRT gunakan Rute antarmoda.</p><button type="button" className="tk-locate-link" onClick={()=>go("Sekitar")}><Icon name="map"/> Cari stasiun dari lokasi saya</button>
  <input aria-label="Cari stasiun asal" placeholder="Berangkat dari? (nama stasiun)" value={originFilter} onChange={e=>setOriginFilter(e.target.value)} style={{width:"100%",padding:10,border:"1px solid var(--border, #cbd5e1)",borderRadius:10,background:"transparent",color:"inherit"}}/>
- <label className="tk-field"><span className="tk-origin"><Icon name="dot"/></span><span>Berangkat dari<select required value={origin} onChange={e=>setOrigin(e.target.value)}><option value="">Pilih stasiun awal</option>{all.filter(s=>matchStation(s,originFilter,origin)).map(s=><option value={s.id} key={s.id}>{s.name} ({s.id})</option>)}</select></span></label>
- <button type="button" className="tk-swap" aria-label="Tukar asal dan tujuan" onClick={()=>{setSelection(prev=>({origin:prev.destination,destination:prev.origin}));setOriginFilter("");setDestinationFilter("");}}><Icon name="swap"/></button>
+ <label className="tk-field"><span className="tk-origin"><Icon name="dot"/></span><span>Berangkat dari<select required disabled={!hydrated} value={origin} onChange={e=>setOrigin(e.target.value)}><option value="">Pilih stasiun awal</option>{all.filter(s=>matchStation(s,originFilter,origin)).map(s=><option value={s.id} key={s.id}>{s.name} ({s.id})</option>)}</select></span></label>
+ <button type="button" className="tk-swap" disabled={!hydrated} aria-label="Tukar asal dan tujuan" onClick={()=>{setSelection(prev=>({origin:prev.destination,destination:prev.origin}));setOriginFilter("");setDestinationFilter("");}}><Icon name="swap"/></button>
  <input aria-label="Cari stasiun tujuan" placeholder="Mau ke mana? (nama stasiun)" value={destinationFilter} onChange={e=>setDestinationFilter(e.target.value)} style={{width:"100%",padding:10,border:"1px solid var(--border, #cbd5e1)",borderRadius:10,background:"transparent",color:"inherit"}}/>
- <label className="tk-field"><span className="tk-dest"><Icon name="map"/></span><span>Tujuan perjalanan<select required value={destination} onChange={e=>setDestination(e.target.value)}><option value="">Pilih stasiun tujuan</option>{all.filter(s=>matchStation(s,destinationFilter,destination)).map(s=><option value={s.id} key={s.id}>{s.name} ({s.id})</option>)}</select></span></label>
+ <label className="tk-field"><span className="tk-dest"><Icon name="map"/></span><span>Tujuan perjalanan<select required disabled={!hydrated} value={destination} onChange={e=>setDestination(e.target.value)}><option value="">Pilih stasiun tujuan</option>{all.filter(s=>matchStation(s,destinationFilter,destination)).map(s=><option value={s.id} key={s.id}>{s.name} ({s.id})</option>)}</select></span></label>
  {stations.error&&<p className="tk-muted">API stasiun belum tersedia. Menampilkan direktori jaringan lokal; jadwal mungkin tidak tersedia.</p>}
- <button className="tk-primary" type="submit"><Icon name="search"/> Cari perjalanan</button>
+ <button className="tk-primary" disabled={!hydrated} type="submit"><Icon name="search"/> Cari perjalanan</button>
  {notice&&<p role="status">{notice}</p>}
  </form>;
  return <div className="tk-shell">
