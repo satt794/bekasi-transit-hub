@@ -17,15 +17,15 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bekasi Transit Hub — Jadwal KRL & Transjakarta Real-Time",
+  title: "TransitKita — Transportasi Jabodetabek",
   description:
-    "Platform transportasi publik terpadu (All-in-One) koridor Bekasi: pantau jadwal KRL Commuter Line real-time terintegrasi langsung dengan halte dan rute bus BRT Transjakarta & Trans Patriot.",
-  applicationName: "Bekasi Transit Hub",
+    "Panduan perjalanan transportasi umum Jabodetabek, jadwal KRL, dan informasi bus.",
+  applicationName: "TransitKita",
 };
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f2f0e9" },
+    { media: "(prefers-color-scheme: light)", color: "#0f766e" },
     { media: "(prefers-color-scheme: dark)", color: "#0f1011" },
   ],
 };
