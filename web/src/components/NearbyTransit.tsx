@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-type Point={id:string;name:string;lat:number;lon:number;kind:string;distance:number};
+type Point={id:string;name:string;lat:number;lon:number;kind:string;distance:number;mode:string;fare:string};
 type Location={lat:number;lon:number;accuracy:number};
 type Element={id:number;type:string;lat?:number;lon?:number;center?:{lat:number;lon:number};tags?:Record<string,string>};
 export function distanceMeters(a:{lat:number;lon:number},b:{lat:number;lon:number}){
@@ -32,10 +32,13 @@ export function NearbyTransit({compact=false,onOpen}:{compact?:boolean;onOpen?:(
     const p=el.center??{lat:el.lat,lon:el.lon};const t=el.tags??{};
     if(typeof p.lat!=="number"||typeof p.lon!=="number")continue;
     const d=distanceMeters(pos,{lat:p.lat,lon:p.lon});if(d>500)continue;
-    const kind=t.shop||t.amenity==="taxi"?"Patokan":t.railway?"Stasiun":"Halte";
+    const tags=[t.operator,t.network,t.brand,t.name].filter(Boolean).join(" ").toLowerCase();
+    const kind=t.shop||t.amenity==="taxi"?"Patokan":t.railway||t.train==="yes"||t.subway==="yes"||t.light_rail==="yes"?"Stasiun":"Halte";
+    const mode=kind==="Patokan"?"":/transjakarta|trans jakarta/.test(tags)?"TJ":/mrt jakarta/.test(tags)||t.subway==="yes"?"MRT":/lrt jabodebek/.test(tags)?"LRT":/commuter|\bkrl\b/.test(tags)?"KRL":"";
+    const fare=mode==="KRL"?"Mulai Rp3.000":mode==="MRT"?"Mulai Rp3.000":mode==="LRT"?"Mulai Rp5.000":mode==="TJ"?"Tarif reguler Rp3.500; layanan khusus berbeda":"";
     const name=t.name||t.ref||kind+" tanpa nama";
     const key=kind+name+":"+p.lat.toFixed(4)+":"+p.lon.toFixed(4);if(seen.has(key))continue;seen.add(key);
-    found.push({id:el.type+el.id,name,lat:p.lat,lon:p.lon,kind,distance:d});
+    found.push({id:el.type+el.id,name,lat:p.lat,lon:p.lon,kind,distance:d,mode,fare});
    }
    setPoints(found.sort((a,b)=>a.distance-b.distance));
    setStatus(found.length?"":"Tidak ditemukan transportasi atau patokan dalam radius 500 meter.");
@@ -81,14 +84,14 @@ export function NearbyTransit({compact=false,onOpen}:{compact?:boolean;onOpen?:(
     <div style={{padding:8,background:"var(--tk-card)",fontSize:11}}>🔵 Lokasi Anda · 🔴 Stasiun · 🟦 Halte · 🟠 Patokan · Lingkaran 500 m</div>
    </div>:<div className="tk-mapempty"><span aria-hidden="true">◎</span><strong>Temukan transportasi di sekitar Anda</strong><small>{location?"Lokasi di luar jangkauan tampilan peta.":"Aktifkan lokasi untuk melihat peta 500 meter."}</small></div>}
 
-   <div className="tk-mapactions"><button className="tk-primary" disabled={busy} onClick={compact&&onOpen?onOpen:locate}>{compact?"Jelajahi sekitar saya":"Gunakan lokasi saya"}</button>{!compact&&<button onClick={()=>setManual(v=>!v)}>Lokasi manual</button>}</div>
-   {!compact&&<><p className="tk-muted">Koordinat dikirim ke server TransitKita dan penyedia OpenStreetMap/Overpass hanya saat pencarian. Jarak dihitung garis lurus, bukan jarak jalan kaki.</p>
+   <div className="tk-mapactions"><button className="tk-primary" disabled={busy} onClick={locate}>{busy?"Mencari lokasi…":"Aktifkan GPS / Cari yang terdekat"}</button>{<button onClick={()=>setManual(v=>!v)}>Lokasi manual</button>}</div>
+   {<><p className="tk-muted">Koordinat dikirim ke server TransitKita dan penyedia OpenStreetMap/Overpass hanya saat pencarian. Jarak dihitung garis lurus, bukan jarak jalan kaki.</p>
    {manual&&<form className="tk-manual" onSubmit={e=>{e.preventDefault();const a=Number(lat),b=Number(lon);if(lat&&lon&&Number.isFinite(a)&&Number.isFinite(b)&&Math.abs(a)<=85&&Math.abs(b)<=180)void search({lat:a,lon:b,accuracy:0});else setStatus("Koordinat tidak valid.");}}><label>Lintang<input required type="number" step="any" value={lat} onChange={e=>setLat(e.target.value)}/></label><label>Bujur<input required type="number" step="any" value={lon} onChange={e=>setLon(e.target.value)}/></label><button disabled={busy} className="tk-primary">Cari sekitar</button></form>}
    {location&&<p className="tk-muted">{location.accuracy?"Akurasi GPS ±"+Math.round(location.accuracy)+" m":"Lokasi manual"} · Radius pencarian 500 m</p>}
    <p role="status" aria-live="polite">{status}</p>
    {location&&!busy&&<button className="tk-primary" style={{width:"calc(100% - 24px)",margin:"12px"}} onClick={()=>void search(location)}>Coba lagi / Muat ulang data sekitar</button>}{location&&location.accuracy>500&&<p className="tk-muted">Akurasi lokasi rendah; hasil radius 500 m mungkin tidak sesuai posisi Anda.</p>}
    <div className="tk-filters">{["Semua","Stasiun","Halte","Patokan"].map(f=><button key={f} aria-pressed={filter===f} onClick={()=>setFilter(f)}>{f}</button>)}</div>
-   {visible.map(p=><article className="tk-place" key={p.id}><button onClick={()=>setSelected(p)}><strong>{p.name}</strong><small>{p.kind} · {Math.round(p.distance)} m</small></button>{p.kind==="Patokan"&&<small>Patokan alternatif — pastikan kendaraan dapat berhenti di sini.</small>}<div><a target="_blank" rel="noreferrer" href={"https://www.google.com/maps/search/?api=1&query="+p.lat+","+p.lon}>Buka Maps</a><button onClick={async()=>{try{await navigator.clipboard.writeText(p.name+" "+p.lat+","+p.lon);setStatus("Lokasi disalin.");}catch{setStatus("Tidak dapat menyalin lokasi.");}}}>Salin lokasi</button></div></article>)}</>}
+   {(compact?visible.slice(0,5):visible).map(p=><article className="tk-place" key={p.id}><button onClick={()=>setSelected(p)}><strong>{p.name}</strong><small>{p.kind}{p.mode?" ("+p.mode+")":""} · Berjarak {Math.round(p.distance)} m (garis lurus)</small>{p.fare&&<small>{p.fare}</small>}</button>{p.kind==="Patokan"&&<small>Patokan alternatif — pastikan kendaraan dapat berhenti di sini.</small>}<div><a target="_blank" rel="noreferrer" href={"https://www.google.com/maps/search/?api=1&query="+p.lat+","+p.lon}>Buka Maps</a><button onClick={async()=>{try{await navigator.clipboard.writeText(p.name+" "+p.lat+","+p.lon);setStatus("Lokasi disalin.");}catch{setStatus("Tidak dapat menyalin lokasi.");}}}>Salin lokasi</button></div></article>)}{compact&&onOpen&&<button className="tk-nearby-more" onClick={onOpen}>Buka pencarian sekitar lengkap →</button>}</>}
   </div>
  </section>;
 }

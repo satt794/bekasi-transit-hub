@@ -92,3 +92,35 @@ test("balance calculator and persistent confirmed expenses",async({page})=>{
  await page.getByRole("button",{name:"Konfirmasi dan simpan"}).click();
  await expect(page.locator(".tk-balance-hero h2")).toHaveText("Rp52.000");
 });
+
+test("desktop: top navigation and stable two-column composition",async({page})=>{
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto(base);
+ const nav=page.locator("header nav");
+ await expect(nav).toBeVisible();
+ expect(await nav.evaluate(e=>getComputedStyle(e).position)).toBe("static");
+ const left=await page.locator(".tk-home-left").boundingBox(),right=await page.locator(".tk-home-right").boundingBox();
+ expect(left).not.toBeNull();expect(right).not.toBeNull();
+ expect(right!.x).toBeGreaterThanOrEqual(left!.x+left!.width);
+ expect(Math.abs(right!.y-left!.y)).toBeLessThan(3);
+ for(const tile of await page.locator(".tk-mode-brand").all()){
+  await expect(tile.locator("strong")).toBeVisible();
+  expect(await tile.evaluate(e=>getComputedStyle(e).flexDirection)).toBe("row");
+ }
+});
+test("homepage GPS: labeled distance and fare from tagged map records",async({page,context})=>{
+ await context.grantPermissions(["geolocation"]);
+ await context.setGeolocation({latitude:-6.2,longitude:106.82});
+ await page.route("**/api/nearby",route=>route.fulfill({json:{elements:[
+ {id:1,type:"node",lat:-6.201,lon:106.82,tags:{name:"Stasiun Uji",railway:"station",operator:"KAI Commuter"}},
+ {id:2,type:"node",lat:-6.202,lon:106.82,tags:{name:"Halte Uji",highway:"bus_stop",operator:"Transjakarta"}},
+ {id:3,type:"node",lat:-6.203,lon:106.82,tags:{name:"Halte lain",highway:"bus_stop"}}
+ ]}}));
+ await page.goto(base);
+ await page.getByRole("button",{name:"Aktifkan GPS / Cari yang terdekat"}).click();
+ await expect(page.getByText("Stasiun Uji",{exact:true})).toBeVisible();
+ await expect(page.getByText("Mulai Rp3.000",{exact:true})).toBeVisible();
+ await expect(page.getByText("Tarif reguler Rp3.500; layanan khusus berbeda",{exact:true})).toBeVisible();
+ await expect(page.getByText(/Stasiun \(KRL\) · Berjarak/)).toBeVisible();
+ await expect(page.locator(".tk-mapcard .tk-place").filter({hasText:"Halte lain"})).not.toContainText("Rp");
+});
