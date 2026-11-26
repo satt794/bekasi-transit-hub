@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-const base = process.env.QA_URL || "https://transitkita.vercel.app";
+const base = process.env.QA_URL || "http://127.0.0.1:3000";
 
 test("mobile: live WIB clock, navigation, and theme", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -43,4 +43,52 @@ test("desktop: route selection, swap, and transfer guidance", async ({ page }) =
   await expect(itinerary).toBeVisible();
   await expect(itinerary.getByText("Memuat jadwal sambungan…")).toHaveCount(0, { timeout: 45000 });
   await expect(itinerary.getByRole("button", { name: "Perbarui jadwal sambungan" })).toBeVisible();
+});
+
+for (const width of [360, 390, 768, 1440]) {
+ test("transport logo bounds at "+width+"px", async ({page})=>{
+  await page.setViewportSize({width,height:900});
+  await page.goto(base);
+  const tiles=page.locator(".tk-mode-brand");
+  await expect(tiles).toHaveCount(4);
+  for(const tile of await tiles.all()){
+   const wrapper=tile.locator(":scope > span").first();
+   const img=wrapper.locator("img");
+   await expect.poll(async()=>await img.evaluate((el:HTMLImageElement)=>el.complete)).toBe(true);
+   const fallback=wrapper.locator(".tk-mode-fallback");
+   if(await img.isVisible()){
+    await expect(fallback).toBeHidden();
+    const b=await wrapper.boundingBox(),i=await img.boundingBox();
+    expect(b).not.toBeNull();expect(i).not.toBeNull();
+    expect(i!.width).toBeLessThanOrEqual(b!.width);
+    expect(i!.height).toBeLessThanOrEqual(b!.height);
+    expect(i!.x).toBeGreaterThanOrEqual(b!.x-1);
+    expect(i!.x+i!.width).toBeLessThanOrEqual(b!.x+b!.width+1);
+    expect(i!.y).toBeGreaterThanOrEqual(b!.y-1);
+    expect(i!.y+i!.height).toBeLessThanOrEqual(b!.y+b!.height+1);
+   }else await expect(fallback).toBeVisible();
+  }
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1)).toBe(true);
+ });
+}
+test("balance calculator and persistent confirmed expenses",async({page})=>{
+ await page.goto(base);
+ await page.getByRole("button",{name:/Cek saldo terakhir/}).click();
+ await expect(page.getByRole("heading",{name:"Cek saldo terakhir"}).first()).toBeVisible();
+ await page.getByLabel("Saldo awal kartu (Rp)").fill("50000");
+ await page.getByLabel("Estimasi tarif sekali jalan (Rp)").fill("4000");
+ await expect(page.locator(".tk-balance-result strong")).toHaveText("Rp46.000");
+ await page.getByLabel("Pulang-pergi dengan estimasi tarif sama").check();
+ await expect(page.locator(".tk-balance-result strong")).toHaveText("Rp42.000");
+ await page.getByRole("button",{name:"Simpan saldo awal"}).click();
+ await page.getByRole("button",{name:"Gunakan biaya ini untuk pencatatan"}).click();
+ await page.getByRole("button",{name:"Konfirmasi dan simpan"}).click();
+ await expect(page.locator(".tk-balance-hero h2")).toHaveText("Rp42.000");
+ await page.reload();
+ await page.getByRole("button",{name:/Cek saldo terakhir/}).click();
+ await expect(page.locator(".tk-balance-hero h2")).toHaveText("Rp42.000");
+ await page.getByRole("button",{name:"Top up",exact:true}).click();
+ await page.getByLabel("Nominal top up yang berhasil (Rp)").fill("10000");
+ await page.getByRole("button",{name:"Konfirmasi dan simpan"}).click();
+ await expect(page.locator(".tk-balance-hero h2")).toHaveText("Rp52.000");
 });
