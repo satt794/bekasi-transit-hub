@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { mrtFare } from "@/lib/mrtFare";
+import { BusAlternatives } from "@/components/BusAlternatives";
 import { multiStations, multiRoute, multiSources } from "@/lib/multimodal";
 const colors={"KRL":"#2563eb","MRT":"#7c3aed","LRT":"#ea580c","Jalan kaki":"#64748b"};
 const stations=Object.entries(multiStations).sort((a,b)=>a[1].localeCompare(b[1],"id"));
@@ -21,9 +23,9 @@ export function MultimodalPlanner(){
  {result&&<div aria-live="polite"><h3>{multiStations[result.from]} → {multiStations[result.to]}</h3>
  {!legs?<p>Rute belum tersedia dalam jaringan ini.</p>:<>
  <p>{legs.filter(l=>l.mode!=="Jalan kaki").length} segmen kereta · {legs.filter(l=>l.mode==="Jalan kaki").length} perpindahan jalan kaki</p>
- {legs.map((l,i)=><article key={i} className="tk-place" style={{borderLeft:"4px solid "+colors[l.mode],paddingLeft:12}}><strong>{i+1}. {l.mode} · {l.line}</strong><p>{multiStations[l.from]} → {multiStations[l.to]}</p>{l.toward&&<p>Arah jaringan: {multiStations[l.toward]}</p>}{l.mode==="Jalan kaki"?<p>Ikuti petunjuk integrasi, keluar dan masuk area berbayar bila diperlukan.</p>:<details><summary>{l.stops.length-1} pemberhentian jaringan</summary><ol>{l.stops.map(id=><li key={id}>{multiStations[id]}</li>)}</ol></details>}</article>)}
- <p className="tk-muted">Periksa jadwal masing-masing operator. Tarif total belum dihitung otomatis.</p></>}
- </div>}
- <p><a href={multiSources.MRT} target="_blank" rel="noreferrer">Referensi MRT</a> · <a href={multiSources.LRT} target="_blank" rel="noreferrer">Referensi LRT</a> · <a href={multiSources.dukuh} target="_blank" rel="noreferrer">Integrasi Dukuh Atas</a> · <a href={multiSources.cikoko} target="_blank" rel="noreferrer">Integrasi Cikoko</a></p>
+ {legs.map((l,i)=><article key={i} className="tk-place" style={{borderLeft:"4px solid "+colors[l.mode],paddingLeft:12}}><strong>{i+1}. {l.mode} · {l.line}</strong><p>{multiStations[l.from]} → {multiStations[l.to]}</p>{l.mode==="MRT"&&mrtFare(l.from,l.to)!==null&&<p>Tarif reguler MRT: Rp{mrtFare(l.from,l.to)!.toLocaleString("id-ID")}</p>}{l.toward&&<p>Arah jaringan: {multiStations[l.toward]}</p>}{l.mode==="Jalan kaki"?<p>Ikuti petunjuk integrasi, keluar dan masuk area berbayar bila diperlukan.</p>:<details><summary>{l.stops.length-1} pemberhentian jaringan</summary><ol>{l.stops.map(id=><li key={id}>{multiStations[id]}</li>)}</ol></details>}</article>)}
+ <p className="tk-muted">Periksa jadwal masing-masing operator. Tarif MRT dihitung dari tabel operator; tarif KRL dan LRT belum dihitung otomatis. Tarif integrasi dan promo dapat berbeda.</p></>}
+ <BusAlternatives from={result.from} to={result.to}/></div>}
+ <p><a href="https://www.jakartamrt.co.id/id/tarif-mrt-jakarta" target="_blank" rel="noreferrer">Tabel tarif MRT</a> · <a href={multiSources.MRT} target="_blank" rel="noreferrer">Referensi MRT</a> · <a href={multiSources.LRT} target="_blank" rel="noreferrer">Referensi LRT</a> · <a href={multiSources.dukuh} target="_blank" rel="noreferrer">Integrasi Dukuh Atas</a> · <a href={multiSources.cikoko} target="_blank" rel="noreferrer">Integrasi Cikoko</a></p>
  </section>;
 }
